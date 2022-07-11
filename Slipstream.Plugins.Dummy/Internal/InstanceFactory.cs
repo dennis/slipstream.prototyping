@@ -1,7 +1,7 @@
 ﻿using Slipstream.Domain.Entities;
 using Slipstream.Domain.ValueObjects;
 
-namespace Slipstream.Plugins.Dummy;
+namespace Slipstream.Plugins.Dummy.Internal;
 
 public class InstanceFactory : IInstanceFactory
 {

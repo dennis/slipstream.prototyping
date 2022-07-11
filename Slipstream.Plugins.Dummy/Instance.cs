@@ -1,5 +1,6 @@
 ﻿using Slipstream.Domain.Entities;
 using Slipstream.Domain.ValueObjects;
+using Slipstream.Plugins.Dummy.Events;
 
 namespace Slipstream.Plugins.Dummy;
 

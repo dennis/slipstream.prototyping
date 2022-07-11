@@ -6,13 +6,13 @@ namespace Slipstream.Domain;
 
 public interface IRegistry
 {
-    public IEnumerable<IComponent> Components { get; }
+    public IEnumerable<IPlugin> Plugins { get; }
 
-    public IComponent GetComponent(EntityName name);
+    public IPlugin GetPlugin(EntityName name);
 
-    public void CreateInstance(IComponent component, EntityName instanceName, IConfiguration config);
+    public void CreateInstance(IPlugin plugin, EntityName instanceName, IConfiguration config);
 
-    public IConfiguration CreateConfiguration(IComponent component);
+    public IConfiguration CreateConfiguration(IPlugin plugin);
 
     public void Start();
     public void Stop();

@@ -12,7 +12,7 @@ namespace Slipstream.Infrastructure;
 
 public class Registry : IRegistry
 {
-    private readonly Dictionary<EntityName, ComponentData> _components = new();
+    private readonly Dictionary<EntityName, PluginData> _plugins = new();
     private readonly Dictionary<EntityName, Task> _tasks = new();  // TODO - we need to handle it
 
     private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -21,26 +21,26 @@ public class Registry : IRegistry
 
     private bool _started;
 
-    public IEnumerable<IComponent> Components { get => _components.Values.Select(a => a.Component); }
+    public IEnumerable<IPlugin> Plugins { get => _plugins.Values.Select(a => a.Plugin); }
 
-    public Registry(IEnumerable<IComponent> components, IServiceScopeFactory serviceScopeFactory)
+    public Registry(IEnumerable<IPlugin> plugins, IServiceScopeFactory serviceScopeFactory)
     {
         _cancelTokenSource = new CancellationTokenSource();
         _serviceScopeFactory = serviceScopeFactory;
         _scope = _serviceScopeFactory.CreateScope();
 
 
-        foreach (var component in components)
+        foreach (var plugin in plugins)
         {
-            var componentType = component.GetType();
-            var meta = componentType.GetCustomAttribute<SlipstreamComponent>();
+            var pluginType = plugin.GetType();
+            var meta = pluginType.GetCustomAttribute<SlipstreamPlugin>();
             if (meta is null)
             {
-                Console.WriteLine($"{componentType.FullName} got no SlipstreamComponent description. Skipping");
+                Console.WriteLine($"{pluginType.FullName} got no SlipstreamPlugin description. Skipping");
                 continue;
             }
 
-            AddComponent(meta, component);
+            AddPlugin(meta, plugin);
         }
     }
 
@@ -51,9 +51,9 @@ public class Registry : IRegistry
 
         _cancelTokenSource = new CancellationTokenSource();
 
-        foreach (var component in Components)
+        foreach (var plugin in Plugins)
         {
-            _tasks.Add(component.Name, component.MainAsync(_cancelTokenSource.Token));
+            _tasks.Add(plugin.Name, plugin.MainAsync(_cancelTokenSource.Token));
         }
 
         _started = true;
@@ -65,55 +65,55 @@ public class Registry : IRegistry
         _started = false;
     }
 
-    private void AddComponent(SlipstreamComponent meta, IComponent component)
+    private void AddPlugin(SlipstreamPlugin meta, IPlugin plugin)
     {
-        EnsureValidEntityName(component.Name);
+        EnsureValidEntityName(plugin.Name);
 
-        _components.Add(component.Name, new ComponentData(
-            Component: component,
+        _plugins.Add(plugin.Name, new PluginData(
+            Plugin: plugin,
             InstanceFactoryType: meta.InstanceFactoryType,
             ConfigurationType: meta.ConfigurationType
         ));
     }
 
-    public IComponent GetComponent(EntityName name)
+    public IPlugin GetPlugin(EntityName name)
     {
-        return _components[name].Component;
+        return _plugins[name].Plugin;
     }
 
-    public void CreateInstance(IComponent component, EntityName instanceName, IConfiguration config)
+    public void CreateInstance(IPlugin plugin, EntityName instanceName, IConfiguration config)
     {
         EnsureValidEntityName(instanceName);
 
-        var instanceFactory = (IInstanceFactory)_scope.ServiceProvider.GetRequiredService(_components[component.Name].InstanceFactoryType);
+        var instanceFactory = (IInstanceFactory)_scope.ServiceProvider.GetRequiredService(_plugins[plugin.Name].InstanceFactoryType);
 
         var instance = instanceFactory.Create(instanceName, config);
 
-        _components[component.Name].Component.AddInstance(instanceName, instance);
+        _plugins[plugin.Name].Plugin.AddInstance(instanceName, instance);
     }
 
     private void EnsureValidEntityName(EntityName name)
     {
-        if (_components.ContainsKey(name))
+        if (_plugins.ContainsKey(name))
         {
             throw new ArgumentException($"{name} already exists");
         }
 
-        foreach (var componentData in _components.Values)
+        foreach (var pluginData in _plugins.Values)
         {
-            if (componentData.Component.InstanceNames.Any(a => a == name))
+            if (pluginData.Plugin.InstanceNames.Any(a => a == name))
             {
                 throw new ArgumentException($"{name} already exists");
             }
         }
     }
 
-    public IConfiguration CreateConfiguration(IComponent component)
+    public IConfiguration CreateConfiguration(IPlugin plugin)
     {
-        return (IConfiguration)_scope.ServiceProvider.GetRequiredService(_components[component.Name].ConfigurationType);
+        return (IConfiguration)_scope.ServiceProvider.GetRequiredService(_plugins[plugin.Name].ConfigurationType);
     }
 
-    private record ComponentData(IComponent Component, Type InstanceFactoryType, Type ConfigurationType)
+    private record PluginData(IPlugin Plugin, Type InstanceFactoryType, Type ConfigurationType)
     {
     }
 }

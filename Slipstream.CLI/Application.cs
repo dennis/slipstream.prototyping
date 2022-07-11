@@ -19,7 +19,7 @@ public class Application
         Console.WriteLine("Slipstream");
 
         // This is configured via UI. We'll just create some instances
-        var c = _registry.GetComponent("Dummy");
+        var c = _registry.GetPlugin("Dummy");
 
         foreach (var instanceName in new string[] { "instance1", "instance2" })
         {

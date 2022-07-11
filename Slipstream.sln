@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{3A6C1DBA-39F2-4ABB-AFA7-AD17CDCE4AE1}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slipstream.Components.Dummy", "Slipstream.Components.Dummy\Slipstream.Components.Dummy.csproj", "{2DA92F8B-3D98-48EB-9CC8-756D0199ADCF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{3A6C1DBA-39F2-4ABB-AFA7-AD17CDCE4AE1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slipstream.CLI", "Slipstream.CLI\Slipstream.CLI.csproj", "{05550717-B11C-46AB-97EB-4F8A12E8C35D}"
 EndProject
@@ -13,9 +11,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slipstream.Domain", "Slipstream.Domain\Slipstream.Domain.csproj", "{BB843332-A106-4BC3-A1B6-A803F0A13D69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slipstream.Domain", "Slipstream.Domain\Slipstream.Domain.csproj", "{BB843332-A106-4BC3-A1B6-A803F0A13D69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slipstream.Infrastructure", "Slipstream.Infrastructure\Slipstream.Infrastructure.csproj", "{29DB3BEF-4D05-44BA-8306-B52596FB97F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slipstream.Infrastructure", "Slipstream.Infrastructure\Slipstream.Infrastructure.csproj", "{29DB3BEF-4D05-44BA-8306-B52596FB97F2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slipstream.Plugins.Dummy", "Slipstream.Plugins.Dummy\Slipstream.Plugins.Dummy.csproj", "{6A40B66A-C486-44DB-B83F-1251DAB12E4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2DA92F8B-3D98-48EB-9CC8-756D0199ADCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2DA92F8B-3D98-48EB-9CC8-756D0199ADCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2DA92F8B-3D98-48EB-9CC8-756D0199ADCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2DA92F8B-3D98-48EB-9CC8-756D0199ADCF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{05550717-B11C-46AB-97EB-4F8A12E8C35D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{05550717-B11C-46AB-97EB-4F8A12E8C35D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05550717-B11C-46AB-97EB-4F8A12E8C35D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,12 +35,16 @@ Global
 		{29DB3BEF-4D05-44BA-8306-B52596FB97F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29DB3BEF-4D05-44BA-8306-B52596FB97F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29DB3BEF-4D05-44BA-8306-B52596FB97F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A40B66A-C486-44DB-B83F-1251DAB12E4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A40B66A-C486-44DB-B83F-1251DAB12E4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A40B66A-C486-44DB-B83F-1251DAB12E4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A40B66A-C486-44DB-B83F-1251DAB12E4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{2DA92F8B-3D98-48EB-9CC8-756D0199ADCF} = {3A6C1DBA-39F2-4ABB-AFA7-AD17CDCE4AE1}
+		{6A40B66A-C486-44DB-B83F-1251DAB12E4F} = {3A6C1DBA-39F2-4ABB-AFA7-AD17CDCE4AE1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {77142561-8A5C-45E3-8227-83E1E81E2273}

@@ -17,12 +17,12 @@ public class EntityName
 
         if (string.IsNullOrWhiteSpace(value))
         {
-            throw new ArgumentException($"ComponentName '{value}' is not valid");
+            throw new ArgumentException($"EntityName '{value}' is not valid");
         }
 
         if (!Regex.IsMatch(value, @"^[a-z0-9_-]+$"))
         {
-            throw new ArgumentException($"ComponentName '{value}' contains invalid characters (a-z0-9, _ and - allowed)");
+            throw new ArgumentException($"EntityName '{value}' contains invalid characters (a-z0-9, _ and - allowed)");
         }
 
         return new EntityName(value);

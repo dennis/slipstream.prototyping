@@ -12,9 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Slipstream.Components.Dummy\Slipstream.Components.Dummy.csproj" />
     <ProjectReference Include="..\Slipstream.Domain\Slipstream.Domain.csproj" />
     <ProjectReference Include="..\Slipstream.Infrastructure\Slipstream.Infrastructure.csproj" />
+    <ProjectReference Include="..\Slipstream.Plugins.Dummy\Slipstream.Plugins.Dummy.csproj" />
   </ItemGroup>
 
 </Project>

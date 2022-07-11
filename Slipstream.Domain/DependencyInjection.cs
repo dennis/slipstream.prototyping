@@ -20,7 +20,7 @@ public static class DependencyInjection
         services.Scan(selector =>
         {
             selector.FromApplicationDependencies()
-                .AddClasses(f => f.AssignableTo<IComponent>())
+                .AddClasses(f => f.AssignableTo<IPlugin>())
                     .AsSelfWithInterfaces()
                     .WithSingletonLifetime()
 

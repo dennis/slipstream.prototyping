@@ -1,6 +1,6 @@
-﻿using Slipstream.Core.ValueObjects;
+﻿using Slipstream.Domain.ValueObjects;
 
-namespace Slipstream.Core.Entities;
+namespace Slipstream.Domain.Entities;
 
 public interface IInstanceFactory
 {

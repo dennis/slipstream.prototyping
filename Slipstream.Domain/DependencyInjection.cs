@@ -1,22 +1,27 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MediatR;
 
-using Slipstream.Core.Configuration;
-using Slipstream.Core.Entities;
-using Slipstream.Core.Forms;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Slipstream.Core;
+using Slipstream.Domain.Configuration;
+using Slipstream.Domain.Entities;
+using Slipstream.Domain.Forms;
+
+using System.Reflection;
+
+namespace Slipstream.Domain;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddSlipstreamCore(this IServiceCollection services)
+    public static IServiceCollection AddSlipstreamDomain(this IServiceCollection services, Assembly assembly)
     {
-        services.AddSingleton<IRegistry, Registry>();
         services.AddTransient<IFormGenerator, FormGenerator>();
+        services.AddMediatR(assembly);
+
         services.Scan(selector =>
         {
             selector.FromApplicationDependencies()
                 .AddClasses(f => f.AssignableTo<IComponent>())
-                    .AsImplementedInterfaces()
+                    .AsSelfWithInterfaces()
                     .WithSingletonLifetime()
 
                 .AddClasses(f => f.AssignableTo<IInstance>())
@@ -30,6 +35,10 @@ public static class DependencyInjection
 
                 .AddClasses(f => f.AssignableTo<IConfigurationValidator>())
                     .AsSelf()
+
+                // Add the mediatr INotificationHandlers from the other assemblies
+                .AddClasses(f => f.AssignableTo(typeof(INotificationHandler<>)))
+                    .AsImplementedInterfaces()
                 ;
         });
 

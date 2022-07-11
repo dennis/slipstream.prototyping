@@ -1,7 +1,6 @@
-﻿
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-namespace Slipstream.Core.ValueObjects;
+namespace Slipstream.Domain.ValueObjects;
 
 public class EntityName
 {

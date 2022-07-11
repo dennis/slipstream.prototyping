@@ -1,13 +1,12 @@
-﻿using Slipstream.Core.Configuration;
-using Slipstream.Core.Entities;
-using Slipstream.Core.ValueObjects;
+﻿using Slipstream.Domain.Configuration;
+using Slipstream.Domain.Entities;
+using Slipstream.Domain.ValueObjects;
 
-namespace Slipstream.Core;
+namespace Slipstream.Domain;
 
 public interface IRegistry
 {
     public IEnumerable<IComponent> Components { get; }
-    public IEnumerable<IInstance> Instances { get; }
 
     public IComponent GetComponent(EntityName name);
 

@@ -1,7 +1,6 @@
 ﻿using FluentValidation.Results;
 
-using System.Reactive.Linq;
-namespace Slipstream.Core.Configuration;
+namespace Slipstream.Domain.Configuration;
 
 public class ConfigurationValidationResult
 {

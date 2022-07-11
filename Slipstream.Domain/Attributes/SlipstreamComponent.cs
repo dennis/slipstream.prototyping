@@ -1,4 +1,4 @@
-﻿namespace Slipstream.Core.Attributes;
+﻿namespace Slipstream.Domain.Attributes;
 
 [AttributeUsage(AttributeTargets.Class)]
 public class SlipstreamComponent : Attribute

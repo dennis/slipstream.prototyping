@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 using Slipstream.CLI;
-using Slipstream.Core;
+using Slipstream.Infrastructure;
+using Slipstream.Domain;
+
+using System.Reflection;
 
 //var builder = new ConfigurationBuilder().AddEnvironmentVariables();
 //var configuration = builder.Build();
@@ -10,14 +12,15 @@ using Slipstream.Core;
 var services = new ServiceCollection();
 
 services.AddSingleton<Application>();
-services.AddSlipstreamCore();
+services.AddSlipstreamInfrastructure();
+services.AddSlipstreamDomain(Assembly.GetExecutingAssembly());
 
-//PrintServiceCollection(services);
+PrintServiceCollection(services);
 
 var serviceProvider = services.BuildServiceProvider();
 var application = serviceProvider.GetRequiredService<Application>();
 
-application.RunAsync();
+application.RunAsync().GetAwaiter().GetResult();
 
 static void PrintServiceCollection(IServiceCollection serviceCollection)
 {

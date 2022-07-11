@@ -3,6 +3,8 @@ using Slipstream.Domain.Attributes;
 using Slipstream.Domain.Configuration;
 using Slipstream.Domain.Entities;
 using Slipstream.Domain.ValueObjects;
+using Slipstream.Plugins.Dummy.Events;
+using Slipstream.Plugins.Dummy.Internal;
 
 using System.Collections.Concurrent;
 

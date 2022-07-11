@@ -29,7 +29,6 @@ public class Registry : IRegistry
         _serviceScopeFactory = serviceScopeFactory;
         _scope = _serviceScopeFactory.CreateScope();
 
-
         foreach (var plugin in plugins)
         {
             var pluginType = plugin.GetType();
@@ -76,9 +75,13 @@ public class Registry : IRegistry
         ));
     }
 
-    public IPlugin GetPlugin(EntityName name)
+    public IPlugin? GetPlugin(EntityName name)
     {
-        return _plugins[name].Plugin;
+        if (_plugins.TryGetValue(name, out var pluginData))
+        {
+            return pluginData.Plugin;
+        }
+        return null;
     }
 
     public void CreateInstance(IPlugin plugin, EntityName instanceName, IConfiguration config)

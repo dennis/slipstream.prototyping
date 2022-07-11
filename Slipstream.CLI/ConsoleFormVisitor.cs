@@ -1,35 +1,23 @@
-﻿using Slipstream.Domain.Forms;
+﻿using Slipstream.Domain.Attributes;
+using Slipstream.Domain.Forms;
 
 namespace Slipstream.CLI;
 
-public class ConsoleFormVisitor : IFormCollectionVisitor
+internal class ConsoleFormVisitor : IFormCollectionVisitor
 {
+    private readonly TUIHelper _tui;
+
+    public ConsoleFormVisitor(TUIHelper tuiHelper)
+    {
+        _tui = tuiHelper;
+    }
+
     public void VisitStringFormElement(StringFormElement element)
     {
-        Prompt(element.Name, element.Value);
-
-        element.Value = Console.ReadLine();
+        element.Value = _tui.Prompt(element.Name, element.Value, element.FormHelp);
     }
 
     public void VisitUnsupportedFormElement(UnsupportedFormElement element)
     {
-        Console.WriteLine("Found UnsupportedFormElement");
-    }
-
-    private static void Prompt(string prompt, string? value)
-    {
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.Write($"  > {prompt} ");
-
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        if (value != null)
-        {
-            Console.Write($"[current: '{value}']: ");
-        }
-        else
-        {
-            Console.Write($": ");
-        }
-        Console.ForegroundColor = ConsoleColor.White;
     }
 }

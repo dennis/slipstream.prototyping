@@ -14,19 +14,10 @@ var services = new ServiceCollection();
 services.AddSingleton<Application>();
 services.AddSlipstreamInfrastructure();
 services.AddSlipstreamDomain(Assembly.GetExecutingAssembly());
-
-PrintServiceCollection(services);
+services.AddTransient<TUIHelper>();
+services.AddTransient<ConsoleFormVisitor>();
 
 var serviceProvider = services.BuildServiceProvider();
 var application = serviceProvider.GetRequiredService<Application>();
 
 application.RunAsync().GetAwaiter().GetResult();
-
-static void PrintServiceCollection(IServiceCollection serviceCollection)
-{
-    Console.WriteLine("Service Registered: ");
-    foreach (var service in serviceCollection)
-    {
-        Console.WriteLine($" - {service.ServiceType.FullName} -> {service.ImplementationType?.FullName} as {service.Lifetime}");
-    }
-}

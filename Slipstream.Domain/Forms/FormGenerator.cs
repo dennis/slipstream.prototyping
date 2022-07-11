@@ -1,4 +1,6 @@
-﻿namespace Slipstream.Domain.Forms;
+﻿using Slipstream.Domain.Attributes;
+
+namespace Slipstream.Domain.Forms;
 
 public class FormGenerator : IFormGenerator
 {
@@ -10,9 +12,11 @@ public class FormGenerator : IFormGenerator
 
         foreach (var property in properties)
         {
+            var a = property.GetCustomAttributes(false).FirstOrDefault(a => a is FormHelp);
+
             if (property.PropertyType == typeof(string))
             {
-                formElements.Add(new StringFormElement(property.Name, property.GetValue(o) as string, property));
+                formElements.Add(new StringFormElement(property.Name, property.GetValue(o) as string, property, (a as FormHelp)?.Description));
             }
             else
             {

@@ -13,7 +13,7 @@ public class KeyPressEventHandler : IEventHandler<KeyPressEvent>
 
     public Task Handle(KeyPressEvent notification, CancellationToken cancellationToken)
     {
-        Console.WriteLine($"[{_plugin.Name}]: got keypressevent {notification.Key}");
+        Console.WriteLine($"[{_plugin.Name}]: got KeyPressEvent {notification.Key}");
 
         foreach (var instance in _plugin.TypedInstances.Values)
         {

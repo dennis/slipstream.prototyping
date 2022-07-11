@@ -15,6 +15,6 @@ public class Instance : IInstance
 
     internal void OnKeyPressEvent(KeyPressEvent @event)
     {
-        Console.WriteLine($"  [{Name}] Got keyrress '{@event.Key}'");
+        Console.WriteLine($"  [{Name}] Got KeyPress '{@event.Key}'");
     }
 }

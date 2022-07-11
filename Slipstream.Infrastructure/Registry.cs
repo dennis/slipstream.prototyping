@@ -1,45 +1,28 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-using Slipstream.Domain;
-using Slipstream.Domain.Attributes;
+﻿using Slipstream.Domain;
 using Slipstream.Domain.Configuration;
 using Slipstream.Domain.Entities;
 using Slipstream.Domain.ValueObjects;
-
-using System.Reflection;
 
 namespace Slipstream.Infrastructure;
 
 public class Registry : IRegistry
 {
-    private readonly Dictionary<EntityName, PluginData> _plugins = new();
+    private readonly Dictionary<EntityName, IPlugin> _plugins = new();
     private readonly Dictionary<EntityName, Task> _tasks = new();  // TODO - we need to handle it
 
-    private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly IServiceScope _scope;
     private CancellationTokenSource _cancelTokenSource;
 
     private bool _started;
 
-    public IEnumerable<IPlugin> Plugins { get => _plugins.Values.Select(a => a.Plugin); }
+    public IEnumerable<IPlugin> Plugins { get => _plugins.Values; }
 
-    public Registry(IEnumerable<IPlugin> plugins, IServiceScopeFactory serviceScopeFactory)
+    public Registry(IEnumerable<IPlugin> plugins)
     {
         _cancelTokenSource = new CancellationTokenSource();
-        _serviceScopeFactory = serviceScopeFactory;
-        _scope = _serviceScopeFactory.CreateScope();
 
         foreach (var plugin in plugins)
         {
-            var pluginType = plugin.GetType();
-            var meta = pluginType.GetCustomAttribute<SlipstreamPlugin>();
-            if (meta is null)
-            {
-                Console.WriteLine($"{pluginType.FullName} got no SlipstreamPlugin description. Skipping");
-                continue;
-            }
-
-            AddPlugin(meta, plugin);
+            AddPlugin(plugin);
         }
     }
 
@@ -64,22 +47,18 @@ public class Registry : IRegistry
         _started = false;
     }
 
-    private void AddPlugin(SlipstreamPlugin meta, IPlugin plugin)
+    private void AddPlugin(IPlugin plugin)
     {
         EnsureValidEntityName(plugin.Name);
 
-        _plugins.Add(plugin.Name, new PluginData(
-            Plugin: plugin,
-            InstanceFactoryType: meta.InstanceFactoryType,
-            ConfigurationType: meta.ConfigurationType
-        ));
+        _plugins.Add(plugin.Name, plugin);
     }
 
     public IPlugin? GetPlugin(EntityName name)
     {
-        if (_plugins.TryGetValue(name, out var pluginData))
+        if (_plugins.TryGetValue(name, out var plugin))
         {
-            return pluginData.Plugin;
+            return plugin;
         }
         return null;
     }
@@ -88,11 +67,7 @@ public class Registry : IRegistry
     {
         EnsureValidEntityName(instanceName);
 
-        var instanceFactory = (IInstanceFactory)_scope.ServiceProvider.GetRequiredService(_plugins[plugin.Name].InstanceFactoryType);
-
-        var instance = instanceFactory.Create(instanceName, config);
-
-        _plugins[plugin.Name].Plugin.AddInstance(instanceName, instance);
+        plugin.CreateInstance(instanceName, config);
     }
 
     private void EnsureValidEntityName(EntityName name)
@@ -102,21 +77,12 @@ public class Registry : IRegistry
             throw new ArgumentException($"{name} already exists");
         }
 
-        foreach (var pluginData in _plugins.Values)
+        foreach (var plugin in _plugins.Values)
         {
-            if (pluginData.Plugin.InstanceNames.Any(a => a == name))
+            if (plugin.InstanceNames.Any(a => a == name))
             {
                 throw new ArgumentException($"{name} already exists");
             }
         }
-    }
-
-    public IConfiguration CreateConfiguration(IPlugin plugin)
-    {
-        return (IConfiguration)_scope.ServiceProvider.GetRequiredService(_plugins[plugin.Name].ConfigurationType);
-    }
-
-    private record PluginData(IPlugin Plugin, Type InstanceFactoryType, Type ConfigurationType)
-    {
     }
 }

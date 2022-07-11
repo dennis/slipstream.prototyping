@@ -7,7 +7,9 @@ public interface IPlugin : IEntity
 {
     IEnumerable<EntityName> InstanceNames { get; }
 
-    void AddInstance(EntityName instanceName, IInstance instance);
-
     ConfigurationValidationResult ValidateConfiguration(IConfiguration config);
+
+    void CreateInstance(EntityName instanceName, IConfiguration config);
+
+    IConfiguration CreateConfiguration();
 }

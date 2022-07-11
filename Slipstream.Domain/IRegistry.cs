@@ -12,8 +12,6 @@ public interface IRegistry
 
     public void CreateInstance(IPlugin plugin, EntityName instanceName, IConfiguration config);
 
-    public IConfiguration CreateConfiguration(IPlugin plugin);
-
     public void Start();
     public void Stop();
 }

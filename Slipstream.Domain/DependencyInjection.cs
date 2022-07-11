@@ -30,9 +30,6 @@ public static class DependencyInjection
                 .AddClasses(f => f.AssignableTo<IConfiguration>())
                     .AsSelf()
 
-                .AddClasses(f => f.AssignableTo<IInstanceFactory>())
-                    .AsSelf()
-
                 .AddClasses(f => f.AssignableTo<IConfigurationValidator>())
                     .AsSelf()
 

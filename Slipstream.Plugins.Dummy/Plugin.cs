@@ -1,5 +1,4 @@
 ﻿using Slipstream.Domain;
-using Slipstream.Domain.Attributes;
 using Slipstream.Domain.Configuration;
 using Slipstream.Domain.Entities;
 using Slipstream.Domain.ValueObjects;
@@ -10,7 +9,6 @@ using System.Collections.Concurrent;
 
 namespace Slipstream.Plugins.Dummy;
 
-[SlipstreamPlugin(typeof(InstanceFactory), typeof(Configuration))] // TODO: Try to avoid this
 public class Plugin : IPlugin
 {
     private readonly IEventPublisher _eventPublisher;
@@ -47,8 +45,13 @@ public class Plugin : IPlugin
         return ConfigurationValidationResult.FromFluentValidationResult(result);
     }
 
-    public void AddInstance(EntityName instanceName, IInstance instance)
+    public IConfiguration CreateConfiguration()
     {
-        TypedInstances[instanceName] = (Instance)instance;
+        return new Configuration();
+    }
+
+    public void CreateInstance(EntityName instanceName, IConfiguration config)
+    {
+        TypedInstances[instanceName] = new Instance(instanceName);
     }
 }

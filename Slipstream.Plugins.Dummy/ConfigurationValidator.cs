@@ -6,6 +6,6 @@ internal class ConfigurationValidator : AbstractValidator<Configuration>
 {
     public ConfigurationValidator()
     {
-        RuleFor(x => x.Name).NotEmpty();
+        RuleFor(x => x.String).NotEmpty();
     }
 }

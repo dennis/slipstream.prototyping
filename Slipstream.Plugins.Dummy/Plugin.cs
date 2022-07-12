@@ -14,9 +14,9 @@ public class Plugin : IPlugin
     private readonly IEventPublisher _eventPublisher;
 
     public EntityName Name => EntityName.From("Dummy");
-    public IEnumerable<EntityName> InstanceNames => TypedInstances.Keys.ToList();
+    public IEnumerable<EntityName> InstanceNames => _typedInstances.Keys.ToList();
 
-    public ConcurrentDictionary<EntityName, Instance> TypedInstances { get; set; } = new();
+    private readonly ConcurrentDictionary<EntityName, Instance> _typedInstances = new();
 
     public Plugin(IEventPublisher eventPublisher)
     {
@@ -38,6 +38,17 @@ public class Plugin : IPlugin
         }, cancel);
     }
 
+    internal void ForAllInstances(Action<Instance> func)
+    {
+        foreach (var instance in _typedInstances.Values)
+        {
+            lock (instance)
+            {
+                func(instance);
+            }
+        }
+    }
+
     public ConfigurationValidationResult ValidateConfiguration(IConfiguration config)
     {
         var result = new ConfigurationValidator().Validate((Configuration)config);
@@ -52,6 +63,6 @@ public class Plugin : IPlugin
 
     public void CreateInstance(EntityName instanceName, IConfiguration config)
     {
-        TypedInstances[instanceName] = new Instance(instanceName);
+        _typedInstances[instanceName] = new Instance(instanceName);
     }
 }

@@ -27,10 +27,10 @@ public static class DependencyInjection
                 .AddClasses(f => f.AssignableTo<IInstance>())
                     .AsSelf()
 
-                .AddClasses(f => f.AssignableTo<IConfiguration>())
+                .AddClasses(f => f.AssignableTo<IInstanceConfiguration>())
                     .AsSelf()
 
-                .AddClasses(f => f.AssignableTo<IConfigurationValidator>())
+                .AddClasses(f => f.AssignableTo<IInstanceConfigurationValidator>())
                     .AsSelf()
 
                 // Add the mediatr INotificationHandlers from the other assemblies

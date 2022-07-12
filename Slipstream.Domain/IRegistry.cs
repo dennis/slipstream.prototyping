@@ -10,7 +10,7 @@ public interface IRegistry
 
     public IPlugin? GetPlugin(EntityName name);
 
-    public void CreateInstance(IPlugin plugin, EntityName instanceName, IConfiguration config);
+    public void CreateInstance(IPlugin plugin, EntityName instanceName, IInstanceConfiguration config);
 
     public void Start();
     public void Stop();

@@ -49,19 +49,19 @@ public class Plugin : IPlugin
         }
     }
 
-    public ConfigurationValidationResult ValidateConfiguration(IConfiguration config)
+    public InstanceConfigurationValidationResult ValidateInstanceConfiguration(IInstanceConfiguration config)
     {
-        var result = new ConfigurationValidator().Validate((Configuration)config);
+        var result = new ConfigurationValidator().Validate((InstanceConfiguration)config);
 
-        return ConfigurationValidationResult.FromFluentValidationResult(result);
+        return InstanceConfigurationValidationResult.FromFluentValidationResult(result);
     }
 
-    public IConfiguration CreateConfiguration()
+    public IInstanceConfiguration CreateInstanceConfiguration()
     {
-        return new Configuration();
+        return new InstanceConfiguration();
     }
 
-    public void CreateInstance(EntityName instanceName, IConfiguration config)
+    public void CreateInstance(EntityName instanceName, IInstanceConfiguration config)
     {
         _typedInstances[instanceName] = new Instance(instanceName);
     }

@@ -1,20 +1,29 @@
 ﻿using Slipstream.Domain;
 using Slipstream.Domain.Forms;
+using Slipstream.Infrastructure;
 
 namespace Slipstream.CLI;
 
-internal class Application
+internal partial class Application
 {
     private readonly IRegistry _registry;
     private readonly TUIHelper _tui;
     private readonly ConsoleFormVisitor _consoleFormVisitor;
+    private readonly IApplicationSettings _applicationSettings;
     private readonly IFormGenerator _formGenerator;
 
-    public Application(IRegistry registry, IFormGenerator formGenerator, TUIHelper tuiHelper, ConsoleFormVisitor consoleFormVisitor)
+    public Application(
+        IRegistry registry, 
+        IFormGenerator formGenerator, 
+        TUIHelper tuiHelper, 
+        ConsoleFormVisitor consoleFormVisitor, 
+        IApplicationSettings applicationSettings
+    )
     {
         _registry = registry;
         _tui = tuiHelper;
         _consoleFormVisitor = consoleFormVisitor;
+        _applicationSettings = applicationSettings;
         _formGenerator = formGenerator;
     }
 
@@ -26,7 +35,7 @@ internal class Application
 
         MainMenu();
 
-        Console.WriteLine("Starting Slipstream");
+        _tui.PrintStrong("Starting Slipstream");
 
         _registry.Start();
 
@@ -34,7 +43,7 @@ internal class Application
 
         _registry.Stop();
 
-        Console.WriteLine("Slipstream stopped");
+        _tui.PrintStrong("Slipstream stopped");
     }
 
     private void MainMenu()
@@ -45,6 +54,8 @@ internal class Application
             _tui.PrintHeading("Main menu:")
                 .Print(" 1 - list plugins")
                 .Print(" 2 - create instance")
+                .Print(" 3 - load config")
+                .Print(" 4 - save config")
                 .Print(" q - quit (and start slipstream)")
                 .Spacer();
 
@@ -62,6 +73,14 @@ internal class Application
                     CreateInstance();
                     break;
 
+                case '3':
+                    LoadConfig();
+                    break;
+
+                case '4':
+                    SaveConfig();
+                    break;
+
                 case 'q':
                 case 'Q':
                     quit = true;
@@ -74,6 +93,33 @@ internal class Application
 
             _tui.Reset();
         } while (!quit);
+    }
+
+    private void SaveConfig()
+    {
+        _tui.PrintStrong("Saving...");
+
+        foreach (var plugin in _registry.Plugins)
+        {
+            plugin.Save(_applicationSettings);
+        }
+
+        _tui.Print("Done");
+    }
+
+    private void LoadConfig()
+    {
+        _tui.PrintStrong("Loading...");
+
+        foreach (var (pluginName, instanceName) in _applicationSettings.ReadInstances())
+        {
+            var plugin = _registry.GetPlugin(pluginName);
+            plugin?.LoadInstance(instanceName, _applicationSettings);
+
+            _tui.Print($" - {pluginName} / {instanceName}");
+        }
+
+        _tui.Print("Done");
     }
 
     private void CreateInstance()

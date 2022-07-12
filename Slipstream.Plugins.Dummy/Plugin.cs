@@ -6,6 +6,7 @@ using Slipstream.Plugins.Dummy.Events;
 using Slipstream.Plugins.Dummy.Internal;
 
 using System.Collections.Concurrent;
+using System.Text.Json;
 
 namespace Slipstream.Plugins.Dummy;
 
@@ -63,6 +64,24 @@ public class Plugin : IPlugin
 
     public void CreateInstance(EntityName instanceName, IInstanceConfiguration config)
     {
-        _typedInstances[instanceName] = new Instance(instanceName);
+        _typedInstances[instanceName] = new Instance(instanceName, (InstanceConfiguration)config);
+    }
+
+    public void Save(IApplicationSettings applicationSettings)
+    {
+        ForAllInstances(instance =>
+        {
+            instance.Save(Name, applicationSettings);
+        });
+    }
+
+    public void LoadInstance(EntityName instanceName, IApplicationSettings applicationSettings)
+    {
+        var json = applicationSettings.LoadInstance(Name, instanceName);
+        var config = JsonSerializer.Deserialize<InstanceConfiguration>(json);
+        if (config is not null)
+        {
+            CreateInstance(instanceName, config);
+        }
     }
 }

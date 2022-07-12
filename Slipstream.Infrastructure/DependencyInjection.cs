@@ -10,6 +10,7 @@ public static class DependencyInjection
     {
         services.AddSingleton<IRegistry, Registry>();
         services.AddSingleton<IEventPublisher, EventPublisher>();
+        services.AddSingleton<IApplicationSettings, ApplicationSettings>();
 
         return services;
     }

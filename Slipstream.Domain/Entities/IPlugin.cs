@@ -12,4 +12,6 @@ public interface IPlugin : IEntity
     void CreateInstance(EntityName instanceName, IInstanceConfiguration config);
 
     IInstanceConfiguration CreateInstanceConfiguration();
+    void Save(IApplicationSettings applicationSettings);
+    void LoadInstance(EntityName instanceName, IApplicationSettings applicationSettings);
 }

@@ -90,7 +90,7 @@ internal class Application
 
         _tui.Spacer();
 
-        var config = plugin.CreateConfiguration();
+        var config = plugin.CreateInstanceConfiguration();
         var form = _formGenerator.Generate(config);
 
         var instanceName = _tui.Prompt("instance name");
@@ -100,7 +100,7 @@ internal class Application
         form.Visit(_consoleFormVisitor);
         form.Populate(config);
 
-        var result = plugin.ValidateConfiguration(config);
+        var result = plugin.ValidateInstanceConfiguration(config);
 
         if (!result.Errors.Any())
         {

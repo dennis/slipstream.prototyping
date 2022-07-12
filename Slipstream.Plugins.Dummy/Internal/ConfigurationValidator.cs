@@ -2,7 +2,7 @@
 
 namespace Slipstream.Plugins.Dummy.Internal;
 
-internal class ConfigurationValidator : AbstractValidator<Configuration>
+internal class ConfigurationValidator : AbstractValidator<InstanceConfiguration>
 {
     public ConfigurationValidator()
     {

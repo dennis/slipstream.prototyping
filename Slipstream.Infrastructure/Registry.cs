@@ -63,7 +63,7 @@ public class Registry : IRegistry
         return null;
     }
 
-    public void CreateInstance(IPlugin plugin, EntityName instanceName, IConfiguration config)
+    public void CreateInstance(IPlugin plugin, EntityName instanceName, IInstanceConfiguration config)
     {
         EnsureValidEntityName(instanceName);
 

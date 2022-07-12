@@ -15,9 +15,6 @@ public class Instance : IInstance
     public Instance(EntityName name, InstanceConfiguration config)
         => (Name, Configuration) = (name, config);
 
-    public Task MainAsync(CancellationToken cancellationToken)
-        => Task.CompletedTask;
-
     internal void OnKeyPressEvent(KeyPressEvent @event)
     {
         Console.WriteLine($"  [{Name}] Got KeyPress '{@event.Key}'");

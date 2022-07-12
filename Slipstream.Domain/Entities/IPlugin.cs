@@ -14,4 +14,6 @@ public interface IPlugin : IEntity
     IInstanceConfiguration CreateInstanceConfiguration();
     void Save(IApplicationSettings applicationSettings);
     void LoadInstance(EntityName instanceName, IApplicationSettings applicationSettings);
+
+    Task MainAsync(CancellationToken cancellationToken);
 }

@@ -1,5 +1,5 @@
 ﻿using Slipstream.Domain;
-using Slipstream.Domain.Entities;
+using Slipstream.Domain.Instances;
 
 namespace Slipstream.CLI.MenuHandlers;
 

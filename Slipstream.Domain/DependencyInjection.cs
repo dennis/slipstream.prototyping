@@ -2,8 +2,9 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-using Slipstream.Domain.Entities;
 using Slipstream.Domain.Forms;
+using Slipstream.Domain.Instances;
+using Slipstream.Domain.Triggers;
 
 using System.Reflection;
 

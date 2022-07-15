@@ -2,6 +2,7 @@
 
 using Slipstream.Domain.Entities;
 using Slipstream.Domain.Events;
+using Slipstream.Domain.Triggers;
 using Slipstream.Domain.ValueObjects;
 using Slipstream.Plugins.Dummy.Events;
 

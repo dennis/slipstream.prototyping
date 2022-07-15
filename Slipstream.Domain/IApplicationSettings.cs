@@ -1,4 +1,5 @@
-﻿using Slipstream.Domain.Entities;
+﻿using Slipstream.Domain.Instances;
+using Slipstream.Domain.Triggers;
 using Slipstream.Domain.ValueObjects;
 
 namespace Slipstream.Domain;

@@ -1,6 +1,6 @@
 ﻿using Slipstream.Domain.Forms;
 using Slipstream.Domain;
-using Slipstream.Domain.Entities;
+using Slipstream.Domain.Triggers;
 
 namespace Slipstream.CLI.MenuHandlers;
 

@@ -1,6 +1,7 @@
-﻿using Slipstream.Domain.Events;
+﻿using Slipstream.Domain.Entities;
+using Slipstream.Domain.Events;
 
-namespace Slipstream.Domain.Entities;
+namespace Slipstream.Domain.Triggers;
 
 public interface ITrigger : IEntity
 {

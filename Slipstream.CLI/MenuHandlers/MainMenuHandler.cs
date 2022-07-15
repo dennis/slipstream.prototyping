@@ -1,26 +1,27 @@
 ﻿using Slipstream.Domain;
-using Slipstream.Domain.Entities;
-using Slipstream.Domain.Forms;
 
-namespace Slipstream.CLI;
+namespace Slipstream.CLI.MenuHandlers;
 
 internal class MainMenuHandler
 {
     private readonly IRegistry _registry;
     private readonly IApplicationSettings _applicationSettings;
     private readonly TriggerMenuHandler _triggerMenuHandler;
+    private readonly InstanceMenuHandler _instanceMenuHandler;
     private readonly EntityHelper _entityHelper;
 
     public MainMenuHandler(
         IRegistry registry,
         IApplicationSettings applicationSettings,
         TriggerMenuHandler triggerMenuHandler,
+        InstanceMenuHandler instanceMenuHandler,
         EntityHelper entityHelper
     )
     {
         _registry = registry;
         _applicationSettings = applicationSettings;
         _triggerMenuHandler = triggerMenuHandler;
+        _instanceMenuHandler = instanceMenuHandler;
         _entityHelper = entityHelper;
     }
 
@@ -30,11 +31,9 @@ internal class MainMenuHandler
         do
         {
             tui.PrintHeading("Main menu:")
-                .Print(" 1 - list instance types")
-                .Print(" 2 - create instance")
-                .Print(" 3 - load config")
-                .Print(" 4 - save config")
-                .Print(" 5 - list instances")
+                .Print(" 1 - load config")
+                .Print(" 2 - save config")
+                .Print(" i - instances menu")
                 .Print(" t - triggers menu")
                 .Print(" q - quit (and start slipstream)")
                 .Spacer();
@@ -44,23 +43,16 @@ internal class MainMenuHandler
             switch (input)
             {
                 case '1':
-                    ShowInstanceTypes(tui);
-                    break;
-
-                case '5':
-                    ShowInstances(tui);
-                    break;
-
-                case '2':
-                    CreateInstance(tui);
-                    break;
-
-                case '3':
                     LoadConfig(tui);
                     break;
 
-                case '4':
+                case '2':
                     SaveConfig(tui);
+                    break;
+
+                case 'i':
+                case 'I':
+                    _instanceMenuHandler.Show(tui.NewScope("instances"));
                     break;
 
                 case 't':
@@ -80,47 +72,6 @@ internal class MainMenuHandler
 
             tui.Reset();
         } while (!quit);
-    }
-
-    private void ShowInstances(TUIHelper tui)
-    {
-        tui.PrintStrong("Instances available:");
-
-        foreach (var instance in _registry.Instances)
-        {
-            tui.Print($" - {instance.Name}");
-        }
-
-        tui.Spacer();
-    }
-
-    private void ShowInstanceTypes(TUIHelper tui)
-    {
-        tui.PrintStrong("Instance types available:");
-
-        foreach (var instanceType in _registry.AvailableInstanceTypes.Keys)
-        {
-            tui.Print($" - {instanceType}");
-        }
-
-        tui.Spacer();
-    }
-
-    private void CreateInstance(TUIHelper tui)
-    {
-        ShowInstanceTypes(tui);
-
-        _entityHelper.Creator<IInstance, IInstanceFactory, IInstanceConfiguration>(
-            tui.NewScope("new instance"), 
-            (entityTypeName) => _registry.AvailableInstanceTypes.ContainsKey(entityTypeName),
-            (entityTypeName) => _registry.AvailableInstanceTypes[entityTypeName].CreateConfiguration(),
-            (entityTypeName, configuration) => _registry.AvailableInstanceTypes[entityTypeName].Validate(configuration),
-            (entityTypeName, entityName, configuration) =>
-            {
-                var instance = _registry.AvailableInstanceTypes[entityTypeName].Create(entityName, configuration);
-                _registry.AddInstance(instance);
-            }
-        );
     }
 
     private void LoadConfig(TUIHelper tui)

@@ -2,7 +2,7 @@
 using Slipstream.Domain;
 using Slipstream.Domain.Entities;
 
-namespace Slipstream.CLI;
+namespace Slipstream.CLI.MenuHandlers;
 
 internal class TriggerMenuHandler
 {

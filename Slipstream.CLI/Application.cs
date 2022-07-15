@@ -1,4 +1,5 @@
-﻿using Slipstream.Domain;
+﻿using Slipstream.CLI.MenuHandlers;
+using Slipstream.Domain;
 using Slipstream.Domain.Forms;
 
 namespace Slipstream.CLI;

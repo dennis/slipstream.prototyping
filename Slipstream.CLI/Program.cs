@@ -5,6 +5,7 @@ using Slipstream.Infrastructure;
 using Slipstream.Domain;
 
 using System.Reflection;
+using Slipstream.CLI.MenuHandlers;
 
 var services = new ServiceCollection();
 
@@ -14,6 +15,7 @@ services.AddSlipstreamInfrastructure();
 services.AddSlipstreamDomain(Assembly.GetExecutingAssembly());
 services.AddTransient<MainMenuHandler>();
 services.AddTransient<TriggerMenuHandler>();
+services.AddTransient<InstanceMenuHandler>();
 services.AddTransient<EntityHelper>();
 
 var serviceProvider = services.BuildServiceProvider();

@@ -1,6 +1,7 @@
 ﻿using Slipstream.CLI.MenuHandlers;
 using Slipstream.Domain;
-using Slipstream.Domain.Forms;
+using Slipstream.Domain.Rules;
+using Slipstream.Plugins.Dummy;
 
 namespace Slipstream.CLI;
 

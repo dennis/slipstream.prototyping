@@ -1,4 +1,5 @@
 ﻿using Slipstream.Domain.Entities;
+using Slipstream.Domain.Extensions;
 using Slipstream.Domain.Forms;
 using Slipstream.Domain.ValueObjects;
 
@@ -15,28 +16,34 @@ internal class EntityHelper
 
     public void Creator<TInstance, TFactory, TConfiguration>(
         TUIHelper tui,
-        Func<string, bool> validEntityTypeName,
         Func<EntityTypeName, TConfiguration?> configurationCreator,
         Func<EntityTypeName, TConfiguration?, ConfigurationValidation> validateConfiguration,
-        Action<EntityTypeName, EntityName, TConfiguration?> adder
+        Action<EntityTypeName, EntityName, TConfiguration?> adder,
+        IList<string> entityTypes
     )
         where TInstance : IEntity
         where TFactory : class
     {
-        var entityTypeName = tui.Prompt("type");
+        string entityTypeName = "";
 
-        var factory = validEntityTypeName(entityTypeName);
+        tui.PrintStrong("Select type");
 
-        if (!factory)
+        foreach (var (item, index) in entityTypes.WithIndex())
         {
-            tui.Error("Unknown type: " + entityTypeName);
-            return;
+            tui.Print($"{index + 1}: {item}");
+        }
+
+        if(int.TryParse(tui.Prompt("Please select"), out int idx) && idx > 0 && idx <= entityTypes.Count)
+        {
+            entityTypeName = entityTypes[idx-1];
+        }
+        else
+        {
+            tui.Error("Invalid input!");
         }
 
         var entityName = tui.Prompt("name");
-
         var configTui = tui.NewScope("configuration");
-
         configTui.PrintStrong("configuration");
 
         var config = configurationCreator(entityTypeName);

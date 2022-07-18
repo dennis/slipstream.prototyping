@@ -70,14 +70,14 @@ internal class InstanceMenuHandler
 
         _entityHelper.Creator<IInstance, IInstanceFactory, IInstanceConfiguration>(
             tui.NewScope("new instance"),
-            (entityTypeName) => _registry.AvailableInstanceTypes.ContainsKey(entityTypeName),
             (entityTypeName) => _registry.AvailableInstanceTypes[entityTypeName].CreateConfiguration(),
             (entityTypeName, configuration) => _registry.AvailableInstanceTypes[entityTypeName].Validate(configuration),
             (entityTypeName, entityName, configuration) =>
             {
                 var instance = _registry.AvailableInstanceTypes[entityTypeName].Create(entityName, configuration);
                 _registry.AddInstance(instance);
-            }
+            }, 
+            _registry.AvailableInstanceTypes.Keys.ToList()
         );
     }
 

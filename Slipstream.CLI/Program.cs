@@ -16,6 +16,7 @@ services.AddSlipstreamDomain(Assembly.GetExecutingAssembly());
 services.AddTransient<MainMenuHandler>();
 services.AddTransient<TriggerMenuHandler>();
 services.AddTransient<InstanceMenuHandler>();
+services.AddTransient<RuleMenuHandler>();
 services.AddTransient<EntityHelper>();
 
 var serviceProvider = services.BuildServiceProvider();

@@ -1,5 +1,4 @@
-﻿using Slipstream.Domain.Forms;
-using Slipstream.Domain;
+﻿using Slipstream.Domain;
 using Slipstream.Domain.Triggers;
 
 namespace Slipstream.CLI.MenuHandlers;
@@ -91,14 +90,14 @@ internal class TriggerMenuHandler
 
         _entityHelper.Creator<ITrigger, ITriggerFactory, ITriggerConfiguration>(
             tui.NewScope("new trigger"),
-            (entityTypeName) => _registry.AvailableTriggerTypes.ContainsKey(entityTypeName),
             (entityTypeName) => _registry.AvailableTriggerTypes[entityTypeName].CreateConfiguration(),
             (entityTypeName, configuration) => _registry.AvailableTriggerTypes[entityTypeName].Validate(configuration),
             (entityTypeName, entityName, configuration) =>
             {
                 var trigger = _registry.AvailableTriggerTypes[entityTypeName].Create(entityName, configuration);
                 _registry.AddTrigger(trigger);
-            }
+            },
+            _registry.AvailableTriggerTypes.Keys.ToList()
         );
     }
 }

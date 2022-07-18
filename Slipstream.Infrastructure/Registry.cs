@@ -1,5 +1,6 @@
 ﻿using Slipstream.Domain;
 using Slipstream.Domain.Instances;
+using Slipstream.Domain.Rules;
 using Slipstream.Domain.Triggers;
 using Slipstream.Domain.ValueObjects;
 
@@ -19,6 +20,7 @@ public class Registry : IRegistry
     public IEnumerable<IInstance> Instances => _instances;
     public IDictionary<string, ITriggerFactory> AvailableTriggerTypes { get; } = new Dictionary<string, ITriggerFactory>();
     public IDictionary<string, IInstanceFactory> AvailableInstanceTypes { get; } = new Dictionary<string, IInstanceFactory>();
+    public List<IRule> Rules { get; } = new();
 
     public Registry(IEnumerable<ITriggerFactory> triggerFactories, IEnumerable<IInstanceFactory> instanceFactories)
     {
@@ -91,5 +93,12 @@ public class Registry : IRegistry
         EnsureValidEntityName(trigger.Name);
 
         _triggers.Add(trigger);
+    }
+
+    public void AddRule(IRule rule)
+    {
+        EnsureValidEntityName(rule.Name);
+
+        Rules.Add(rule);
     }
 }

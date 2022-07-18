@@ -1,0 +1,16 @@
+﻿using Slipstream.Domain.Events;
+using Slipstream.Domain.ValueObjects;
+
+namespace Slipstream.Domain.Triggers;
+
+public class NoOpTrigger : ITrigger
+{
+    public ITriggerConfiguration? Configuration => null;
+
+    public EntityName Name => "NoOp";
+
+    public EntityTypeName TypeName => "NoOp";
+
+    public Task<bool> EvaluateAsync(IEvent @event)
+        => Task.FromResult(false);
+}

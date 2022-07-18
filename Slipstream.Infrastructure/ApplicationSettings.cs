@@ -1,5 +1,6 @@
 ﻿using Slipstream.Domain;
 using Slipstream.Domain.Instances;
+using Slipstream.Domain.Rules;
 using Slipstream.Domain.Triggers;
 using Slipstream.Domain.ValueObjects;
 
@@ -8,14 +9,16 @@ namespace Slipstream.Infrastructure;
 public class ApplicationSettings : IApplicationSettings
 {
     private readonly IRegistry _registry;
+    private readonly IRuleFactory _ruleFactory;
 
-    public ApplicationSettings(IRegistry registry)
+    public ApplicationSettings(IRegistry registry, IRuleFactory ruleFactory)
     {
         Directory.CreateDirectory("save/");
         Directory.CreateDirectory("save/instances/");
         Directory.CreateDirectory("save/triggers/");
 
         _registry = registry;
+        _ruleFactory = ruleFactory;
     }
 
     public void SaveInstance(IInstance instance)
@@ -41,6 +44,18 @@ public class ApplicationSettings : IApplicationSettings
 
     public string LoadTrigger(EntityTypeName entityTypeName, EntityName entityName)
         => LoadEntity("save/triggers/", entityTypeName, entityName);
+
+    public void SaveRule(IRule rule)
+    {
+        var json = _ruleFactory.ConfigurationJsonEncoder(rule.Configuration);
+        SaveEntity("save/rules", (string)rule.TypeName, rule.Name, json);
+    }
+
+    public IEnumerable<(EntityTypeName, EntityName)> ReadRules()
+        => ReadEntities("save/rules");
+
+    public string LoadRule(EntityName entityName)
+        => LoadEntity("save/rules", "rule", entityName);
 
     private static string LoadEntity(string rootDirectory, EntityTypeName entityTypeName, EntityName entityName)
         => File.ReadAllText($"{rootDirectory}/{entityTypeName}/{entityName}.json");

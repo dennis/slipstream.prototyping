@@ -13,7 +13,7 @@ internal class Application
 
     public Application(
         IRegistry registry, 
-        TUIHelper tuiHelper, 
+        TUIHelper tuiHelper,
         MainMenuHandler mainMenuHandler
     )
     {

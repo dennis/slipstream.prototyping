@@ -2,5 +2,5 @@
 
 public interface IEventPublisher
 {
-    Task Publish(IEvent @event);
+    Task PublishAsync(IEvent @event);
 }

@@ -8,4 +8,5 @@ public interface ITrigger : IEntity
     ITriggerConfiguration? Configuration { get; }
 
     public Task<bool> EvaluateAsync(IEvent @event);
+    bool Accepts(IEvent @event);
 }

@@ -23,7 +23,7 @@ public class ApplicationSettings : IApplicationSettings
 
     public void SaveInstance(IInstance instance)
     {
-        var json = _registry.AvailableInstanceTypes[instance.TypeName].ConfigurationJsonEncoder(instance.Configuration);
+        var json = _registry.InstanceContainer[instance.TypeName].ConfigurationJsonEncoder(instance.Configuration);
         SaveEntity("save/instances", (string)instance.TypeName, instance.Name, json);
     }
         
@@ -35,7 +35,7 @@ public class ApplicationSettings : IApplicationSettings
 
     public void SaveTrigger(ITrigger trigger)
     {
-        var json = _registry.AvailableTriggerTypes[trigger.TypeName].ConfigurationJsonEncoder(trigger.Configuration);
+        var json = _registry.TriggerContainer.Types[trigger.TypeName].ConfigurationJsonEncoder(trigger.Configuration);
         SaveEntity("save/triggers", (string)trigger.TypeName, trigger.Name, json);
     }
 

@@ -12,6 +12,8 @@ public static class DependencyInjection
         services.AddSingleton<IRegistry, Registry>();
         services.AddSingleton<IEventPublisher, EventPublisher>();
         services.AddSingleton<IApplicationSettings, ApplicationSettings>();
+        services.AddSingleton<IInstanceContainer, InstanceContainer>();
+        services.AddSingleton<ITriggerContainer, TriggerContainer>();
 
         return services;
     }

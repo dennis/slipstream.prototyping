@@ -9,42 +9,20 @@ namespace Slipstream.Infrastructure;
 public class Registry : IRegistry
 {
     private readonly Dictionary<EntityName, Task> _tasks = new();  // TODO - we need to handle it properly
-    private readonly List<ITrigger> _triggers = new();
-    private readonly List<IInstance> _instances= new();
 
     private CancellationTokenSource _cancelTokenSource;
 
     private bool _started;
 
-    public IEnumerable<ITrigger> Triggers => _triggers;
-    public IEnumerable<IInstance> Instances => _instances;
-    public IDictionary<string, ITriggerFactory> AvailableTriggerTypes { get; } = new Dictionary<string, ITriggerFactory>();
-    public IDictionary<string, IInstanceFactory> AvailableInstanceTypes { get; } = new Dictionary<string, IInstanceFactory>();
+    public IInstanceContainer InstanceContainer { get; }
+    public ITriggerContainer TriggerContainer { get; }
     public List<IRule> Rules { get; } = new();
 
-    public Registry(IEnumerable<ITriggerFactory> triggerFactories, IEnumerable<IInstanceFactory> instanceFactories)
+    public Registry(IInstanceContainer availableInstanceTypes, ITriggerContainer triggerContainer)
     {
+        InstanceContainer = availableInstanceTypes;
+        TriggerContainer = triggerContainer;
         _cancelTokenSource = new CancellationTokenSource();
-
-        foreach (var triggerFactory in triggerFactories)
-        {
-            AddTriggerType(triggerFactory);
-        }
-
-        foreach (var factory in instanceFactories)
-        {
-            AddInstanceType(factory);
-        }
-    }
-
-    private void AddInstanceType(IInstanceFactory factory)
-    {
-        AvailableInstanceTypes.Add(factory.TypeName, factory);
-    }
-
-    private void AddTriggerType(ITriggerFactory factory)
-    {
-        AvailableTriggerTypes.Add(factory.TypeName, factory);
     }
 
     public void Start()
@@ -54,7 +32,7 @@ public class Registry : IRegistry
 
         _cancelTokenSource = new CancellationTokenSource();
 
-        foreach (var instance in _instances)
+        foreach (var instance in InstanceContainer.Instances)
         {
             _tasks.Add(instance.Name, instance.MainAsync(_cancelTokenSource.Token));
         }
@@ -70,12 +48,12 @@ public class Registry : IRegistry
 
     private void EnsureValidEntityName(EntityName name)
     {
-        if (_triggers.Select(a => a.Name).Contains(name))
+        if (TriggerContainer.Triggers.Select(a => a.Name).Contains(name))
         {
             throw new ArgumentException($"{name} already exists (used by a trigger)");
         }
 
-        if (_instances.Select(a => a.Name).Contains(name))
+        if (InstanceContainer.Instances.Select(a => a.Name).Contains(name))
         {
             throw new ArgumentException($"{name} already exists (used by an instance)");
         }
@@ -85,14 +63,14 @@ public class Registry : IRegistry
     {
         EnsureValidEntityName(instance.Name);
 
-        _instances.Add(instance);
+        InstanceContainer.Instances.Add(instance);
     }
 
     public void AddTrigger(ITrigger trigger)
     {
         EnsureValidEntityName(trigger.Name);
 
-        _triggers.Add(trigger);
+        TriggerContainer.Triggers.Add(trigger);
     }
 
     public void AddRule(IRule rule)

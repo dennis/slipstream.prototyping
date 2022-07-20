@@ -56,7 +56,7 @@ internal class InstanceMenuHandler
     {
         tui.PrintStrong("Instance types available:");
 
-        foreach (var instanceType in _registry.AvailableInstanceTypes.Keys)
+        foreach (var instanceType in _registry.InstanceContainer.Keys)
         {
             tui.Print($" - {instanceType}");
         }
@@ -70,14 +70,14 @@ internal class InstanceMenuHandler
 
         _entityHelper.Creator<IInstance, IInstanceFactory, IInstanceConfiguration>(
             tui.NewScope("new instance"),
-            (entityTypeName) => _registry.AvailableInstanceTypes[entityTypeName].CreateConfiguration(),
-            (entityTypeName, configuration) => _registry.AvailableInstanceTypes[entityTypeName].Validate(configuration),
+            (entityTypeName) => _registry.InstanceContainer[entityTypeName].CreateConfiguration(),
+            (entityTypeName, configuration) => _registry.InstanceContainer[entityTypeName].Validate(configuration),
             (entityTypeName, entityName, configuration) =>
             {
-                var instance = _registry.AvailableInstanceTypes[entityTypeName].Create(entityName, configuration);
+                var instance = _registry.InstanceContainer[entityTypeName].Create(entityName, configuration);
                 _registry.AddInstance(instance);
             }, 
-            _registry.AvailableInstanceTypes.Keys.ToList()
+            _registry.InstanceContainer.Keys.ToList()
         );
     }
 
@@ -85,7 +85,7 @@ internal class InstanceMenuHandler
     {
         tui.PrintStrong("Instances available:");
 
-        foreach (var instance in _registry.Instances)
+        foreach (var instance in _registry.InstanceContainer.Instances)
         {
             tui.Print($" - {instance.Name}");
         }

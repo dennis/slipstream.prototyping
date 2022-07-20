@@ -6,11 +6,11 @@ namespace Slipstream.Domain;
 
 public interface IRegistry
 {
-    public IEnumerable<IInstance> Instances { get; }
-    public IEnumerable<ITrigger> Triggers { get; }
 
-    public IDictionary<string, ITriggerFactory> AvailableTriggerTypes { get; }
-    public IDictionary<string, IInstanceFactory> AvailableInstanceTypes { get; }
+    
+    public ITriggerContainer TriggerContainer { get; }
+    public IInstanceContainer InstanceContainer { get; }
+    
     public List<IRule> Rules { get; }
 
     public void AddInstance(IInstance instance);

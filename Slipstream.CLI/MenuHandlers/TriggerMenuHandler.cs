@@ -58,9 +58,9 @@ internal class TriggerMenuHandler
     {
         tui.PrintStrong("list triggers");
 
-        if (_registry.Triggers.Any())
+        if (_registry.TriggerContainer.Triggers.Any())
         {
-            foreach (var trigger in _registry.Triggers)
+            foreach (var trigger in _registry.TriggerContainer.Triggers)
             {
                 tui.Print($" - {trigger.Name}  ({trigger.GetType()})");
             }
@@ -77,27 +77,27 @@ internal class TriggerMenuHandler
     {
         tui.PrintStrong("Create trigger");
 
-        if (!_registry.AvailableTriggerTypes.Any())
+        if (!_registry.TriggerContainer.Types.Keys.Any())
         {
             tui.Error("No trigger types available").Spacer();
             return;
         }
 
-        foreach (var t in _registry.AvailableTriggerTypes)
+        foreach (var t in _registry.TriggerContainer.Types.Keys)
         {
             tui.Print($" - {t}");
         }
 
         _entityHelper.Creator<ITrigger, ITriggerFactory, ITriggerConfiguration>(
             tui.NewScope("new trigger"),
-            (entityTypeName) => _registry.AvailableTriggerTypes[entityTypeName].CreateConfiguration(),
-            (entityTypeName, configuration) => _registry.AvailableTriggerTypes[entityTypeName].Validate(configuration),
+            (entityTypeName) => _registry.TriggerContainer.Types[entityTypeName].CreateConfiguration(),
+            (entityTypeName, configuration) => _registry.TriggerContainer.Types[entityTypeName].Validate(configuration),
             (entityTypeName, entityName, configuration) =>
             {
-                var trigger = _registry.AvailableTriggerTypes[entityTypeName].Create(entityName, configuration);
+                var trigger = _registry.TriggerContainer.Types[entityTypeName].Create(entityName, configuration);
                 _registry.AddTrigger(trigger);
             },
-            _registry.AvailableTriggerTypes.Keys.ToList()
+            _registry.TriggerContainer.Types.Keys.ToList()
         );
     }
 }

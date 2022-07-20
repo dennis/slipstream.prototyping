@@ -69,9 +69,7 @@ public class InstanceFactory : IInstanceFactory
             {
                 var c = Console.ReadKey().KeyChar;
 
-                Console.WriteLine("GOT CHAR: " + c);
-
-                await _eventPublisher.Publish(new KeyPressEvent(c)).ConfigureAwait(false);
+                await _eventPublisher.PublishAsync(new KeyPressEvent(c)).ConfigureAwait(false);
             }
         }, cancel);
     }

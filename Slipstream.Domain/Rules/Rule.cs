@@ -14,7 +14,7 @@ public class Rule : IRule
     public Rule(IRegistry registry, EntityName name, IRuleConfiguration configuration)
     {
         Name = name;
-        Trigger = registry.Triggers.Single(a => a.Name == configuration.Trigger);
+        Trigger = registry.TriggerContainer.Triggers.Single(a => a.Name == configuration.Trigger);
         Configuration = configuration;
     }
 }

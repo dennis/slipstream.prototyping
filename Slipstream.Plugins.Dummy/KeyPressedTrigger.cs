@@ -60,8 +60,10 @@ public class KeyPressedTrigger : ITrigger
     public KeyPressedTrigger(EntityName name, KeyPressTriggerConfiguration configuration)
         => (Name, _configuration) = (name, configuration);
 
+    // Accepts() evaluates everything, so we just return true
     public Task<bool> EvaluateAsync(IEvent @event)
-    {
-        return Task.FromResult(@event is KeyPressEvent event1 && _configuration.Key.Contains(event1.Key));
-    }
+        => Task.FromResult(true);
+
+    public bool Accepts(IEvent @event)
+        => @event is KeyPressEvent event1 && _configuration.Key.Contains(event1.Key);
 }

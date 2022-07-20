@@ -11,6 +11,9 @@ public class NoOpTrigger : ITrigger
 
     public EntityTypeName TypeName => "NoOp";
 
+    public bool Accepts(IEvent @event)
+        => false;
+
     public Task<bool> EvaluateAsync(IEvent @event)
         => Task.FromResult(false);
 }

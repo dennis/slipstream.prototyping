@@ -90,7 +90,7 @@ internal class MainMenuHandler
 
         foreach (var (instanceTypeName, instanceName) in _applicationSettings.ReadInstances())
         {
-            var factory = _registry.AvailableInstanceTypes[instanceTypeName];
+            var factory = _registry.InstanceContainer[instanceTypeName];
 
             var config = factory.ConfigurationJsonDecoder(_applicationSettings.LoadInstance(instanceTypeName, instanceName));
             if (config is not null && !factory.Validate(config).IsValid())
@@ -109,7 +109,7 @@ internal class MainMenuHandler
 
         foreach (var (triggerTypeName, triggerName) in _applicationSettings.ReadTriggers())
         {
-            var factory = _registry.AvailableTriggerTypes[triggerTypeName];
+            var factory = _registry.TriggerContainer.Types[triggerTypeName];
 
             var config = factory.ConfigurationJsonDecoder(_applicationSettings.LoadTrigger(triggerTypeName, triggerName));
             if (config is not null && !factory.Validate(config).IsValid())
@@ -144,12 +144,12 @@ internal class MainMenuHandler
     {
         tui.PrintStrong("Saving...");
 
-        foreach (var instance in _registry.Instances)
+        foreach (var instance in _registry.InstanceContainer.Instances)
         {
             _applicationSettings.SaveInstance(instance);
         }
 
-        foreach (var trigger in _registry.Triggers)
+        foreach (var trigger in _registry.TriggerContainer.Triggers)
         {
             _applicationSettings.SaveTrigger(trigger);
         }

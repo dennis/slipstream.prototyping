@@ -54,8 +54,11 @@ public class InstanceFactory : IInstanceFactory
     public IInstanceConfiguration? CreateConfiguration()
         => new InstanceConfiguration();
 
-    public ConfigurationValidation Validate(IInstanceConfiguration config)
+    public ConfigurationValidation Validate(IInstanceConfiguration? config)
     {
+        if (config == null)
+            throw new ArgumentNullException(nameof(config));
+
         var result = new InstanceConfigurationValidator().Validate((InstanceConfiguration)config);
 
         return ConfigurationValidation.FromFluentValidationResult(result);

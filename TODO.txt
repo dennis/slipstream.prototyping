@@ -1,0 +1,17 @@
+[ ] Refactor Instance and Trigger creation
+	[ ] shared save/load logic?
+	- generalized IFactory for all IXxxxFactory classes
+	- make triggers work
+
+
+[ ] Add ActionGroups - a ordered list of actions. These can have one of the following modes: (alternative name: programs?)
+  - Sequence (once invoked, they will be executed one by one)
+  - Random (once invoked, one action is executed)
+  - OneByOne (once invoked the first action is used, next invocation will trigger the next + etc)
+  - ActionGroups can be executed by a ExecuteActionGroup()
+
+[ ] For parsing expressions and clauses look further into 
+  - [ ] https://tomassetti.me/parsing-in-csharp/ 
+  - [ ] https://github.com/b3b00/csly/wiki/getting-started
+
+[ ] in case we want to support javascript: https://github.com/paulbartrum/jurassic

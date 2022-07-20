@@ -35,14 +35,22 @@ public class KeyPressTriggerFactory : ITriggerFactory
     public string ConfigurationJsonEncoder(ITriggerConfiguration? config)
         => JsonSerializer.Serialize((KeyPressTriggerConfiguration?)config);
 
-    public ITrigger Create(EntityName name, ITriggerConfiguration? setup)
-        => new KeyPressedTrigger(name, (KeyPressTriggerConfiguration?)setup);
+    public ITrigger Create(EntityName name, ITriggerConfiguration? config)
+    {
+        if (config == null)
+            throw new ArgumentNullException(nameof(config));
+
+        return new KeyPressedTrigger(name, (KeyPressTriggerConfiguration)config);
+    }
 
     public ITriggerConfiguration? CreateConfiguration()
         => new KeyPressTriggerConfiguration();
 
-    public ConfigurationValidation Validate(ITriggerConfiguration config)
+    public ConfigurationValidation Validate(ITriggerConfiguration? config)
     {
+        if (config == null)
+            throw new ArgumentNullException(nameof(config));
+
         var result = new KeyPressTriggerConfigurationValidator().Validate((KeyPressTriggerConfiguration)config);
 
         return ConfigurationValidation.FromFluentValidationResult(result);

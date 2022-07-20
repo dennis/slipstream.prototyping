@@ -1,8 +1,8 @@
 ﻿using FluentValidation.Results;
 
-namespace Slipstream.Domain.Configuration;
+namespace Slipstream.Domain.Entities;
 
-public class InstanceConfigurationValidationResult
+public class ConfigurationValidation
 {
     private readonly Dictionary<string, string> _errors = new();
 
@@ -16,9 +16,9 @@ public class InstanceConfigurationValidationResult
     public bool IsValid()
         => _errors.Keys.Count == 0;
 
-    public static InstanceConfigurationValidationResult FromFluentValidationResult(ValidationResult input)
+    public static ConfigurationValidation FromFluentValidationResult(ValidationResult input)
     {
-        var output = new InstanceConfigurationValidationResult();
+        var output = new ConfigurationValidation();
 
         foreach (var error in input.Errors)
         {

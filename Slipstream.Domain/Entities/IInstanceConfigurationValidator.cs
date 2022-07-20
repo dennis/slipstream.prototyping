@@ -1,4 +1,4 @@
-﻿namespace Slipstream.Domain.Configuration;
+﻿namespace Slipstream.Domain.Entities;
 
 public interface IInstanceConfigurationValidator
 {

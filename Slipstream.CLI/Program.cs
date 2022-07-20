@@ -6,16 +6,15 @@ using Slipstream.Domain;
 
 using System.Reflection;
 
-//var builder = new ConfigurationBuilder().AddEnvironmentVariables();
-//var configuration = builder.Build();
-
 var services = new ServiceCollection();
 
 services.AddSingleton<Application>();
+services.AddSingleton<TUIHelper>();
 services.AddSlipstreamInfrastructure();
 services.AddSlipstreamDomain(Assembly.GetExecutingAssembly());
-services.AddTransient<TUIHelper>();
-services.AddTransient<ConsoleFormVisitor>();
+services.AddTransient<MainMenuHandler>();
+services.AddTransient<TriggerMenuHandler>();
+services.AddTransient<EntityHelper>();
 
 var serviceProvider = services.BuildServiceProvider();
 var application = serviceProvider.GetRequiredService<Application>();

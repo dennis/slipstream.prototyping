@@ -1,10 +1,15 @@
-﻿using Slipstream.Domain.ValueObjects;
+﻿using Slipstream.Domain.Entities;
+using Slipstream.Domain.ValueObjects;
 
 namespace Slipstream.Domain;
 
 public interface IApplicationSettings
 {
-    IEnumerable<(EntityName, EntityName)> ReadInstances();
-    void SaveInstance(EntityName pluginName, EntityName instanceName, string content);
-    string LoadInstance(EntityName pluginName, EntityName instanceName);
+    IEnumerable<(EntityTypeName, EntityName)> ReadInstances();
+    void SaveInstance(IInstance instance);
+    string LoadInstance(EntityTypeName pluginName, EntityName instanceName);
+
+    IEnumerable<(EntityTypeName, EntityName)> ReadTriggers();
+    void SaveTrigger(ITrigger trigger);
+    string LoadTrigger(EntityTypeName triggerTypeName, EntityName triggerName);
 }

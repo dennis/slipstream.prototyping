@@ -1,5 +1,4 @@
 ﻿using Slipstream.Domain;
-using Slipstream.Domain.Configuration;
 using Slipstream.Domain.Entities;
 using Slipstream.Domain.ValueObjects;
 
@@ -7,23 +6,42 @@ namespace Slipstream.Infrastructure;
 
 public class Registry : IRegistry
 {
-    private readonly Dictionary<EntityName, IPlugin> _plugins = new();
-    private readonly Dictionary<EntityName, Task> _tasks = new();  // TODO - we need to handle it
+    private readonly Dictionary<EntityName, Task> _tasks = new();  // TODO - we need to handle it properly
+    private readonly List<ITrigger> _triggers = new();
+    private readonly List<IInstance> _instances= new();
 
     private CancellationTokenSource _cancelTokenSource;
 
     private bool _started;
 
-    public IEnumerable<IPlugin> Plugins { get => _plugins.Values; }
+    public IEnumerable<ITrigger> Triggers => _triggers;
+    public IEnumerable<IInstance> Instances => _instances;
+    public IDictionary<string, ITriggerFactory> AvailableTriggerTypes { get; } = new Dictionary<string, ITriggerFactory>();
+    public IDictionary<string, IInstanceFactory> AvailableInstanceTypes { get; } = new Dictionary<string, IInstanceFactory>();
 
-    public Registry(IEnumerable<IPlugin> plugins)
+    public Registry(IEnumerable<ITriggerFactory> triggerFactories, IEnumerable<IInstanceFactory> instanceFactories)
     {
         _cancelTokenSource = new CancellationTokenSource();
 
-        foreach (var plugin in plugins)
+        foreach (var triggerFactory in triggerFactories)
         {
-            AddPlugin(plugin);
+            AddTriggerType(triggerFactory);
         }
+
+        foreach (var factory in instanceFactories)
+        {
+            AddInstanceType(factory);
+        }
+    }
+
+    private void AddInstanceType(IInstanceFactory factory)
+    {
+        AvailableInstanceTypes.Add(factory.TypeName, factory);
+    }
+
+    private void AddTriggerType(ITriggerFactory factory)
+    {
+        AvailableTriggerTypes.Add(factory.TypeName, factory);
     }
 
     public void Start()
@@ -33,9 +51,9 @@ public class Registry : IRegistry
 
         _cancelTokenSource = new CancellationTokenSource();
 
-        foreach (var plugin in Plugins)
+        foreach (var instance in _instances)
         {
-            _tasks.Add(plugin.Name, plugin.MainAsync(_cancelTokenSource.Token));
+            _tasks.Add(instance.Name, instance.MainAsync(_cancelTokenSource.Token));
         }
 
         _started = true;
@@ -47,42 +65,30 @@ public class Registry : IRegistry
         _started = false;
     }
 
-    private void AddPlugin(IPlugin plugin)
-    {
-        EnsureValidEntityName(plugin.Name);
-
-        _plugins.Add(plugin.Name, plugin);
-    }
-
-    public IPlugin? GetPlugin(EntityName name)
-    {
-        if (_plugins.TryGetValue(name, out var plugin))
-        {
-            return plugin;
-        }
-        return null;
-    }
-
-    public void CreateInstance(IPlugin plugin, EntityName instanceName, IInstanceConfiguration config)
-    {
-        EnsureValidEntityName(instanceName);
-
-        plugin.CreateInstance(instanceName, config);
-    }
-
     private void EnsureValidEntityName(EntityName name)
     {
-        if (_plugins.ContainsKey(name))
+        if (_triggers.Select(a => a.Name).Contains(name))
         {
-            throw new ArgumentException($"{name} already exists");
+            throw new ArgumentException($"{name} already exists (used by a trigger)");
         }
 
-        foreach (var plugin in _plugins.Values)
+        if (_instances.Select(a => a.Name).Contains(name))
         {
-            if (plugin.InstanceNames.Any(a => a == name))
-            {
-                throw new ArgumentException($"{name} already exists");
-            }
+            throw new ArgumentException($"{name} already exists (used by an instance)");
         }
+    }
+
+    public void AddInstance(IInstance instance)
+    {
+        EnsureValidEntityName(instance.Name);
+
+        _instances.Add(instance);
+    }
+
+    public void AddTrigger(ITrigger trigger)
+    {
+        EnsureValidEntityName(trigger.Name);
+
+        _triggers.Add(trigger);
     }
 }

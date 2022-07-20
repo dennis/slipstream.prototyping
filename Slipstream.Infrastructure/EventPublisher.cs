@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-using Slipstream.Domain;
+using Slipstream.Domain.Events;
 
 namespace Slipstream.Infrastructure;
 

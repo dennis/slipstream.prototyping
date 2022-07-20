@@ -2,7 +2,6 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-using Slipstream.Domain.Configuration;
 using Slipstream.Domain.Entities;
 using Slipstream.Domain.Forms;
 
@@ -20,10 +19,6 @@ public static class DependencyInjection
         services.Scan(selector =>
         {
             selector.FromApplicationDependencies()
-                .AddClasses(f => f.AssignableTo<IPlugin>())
-                    .AsSelfWithInterfaces()
-                    .WithSingletonLifetime()
-
                 .AddClasses(f => f.AssignableTo<IInstance>())
                     .AsSelf()
 
@@ -32,6 +27,13 @@ public static class DependencyInjection
 
                 .AddClasses(f => f.AssignableTo<IInstanceConfigurationValidator>())
                     .AsSelf()
+
+                .AddClasses(f => f.AssignableTo<ITriggerFactory>())
+                    .AsSelfWithInterfaces()
+
+                .AddClasses(f => f.AssignableTo<IInstanceFactory>())
+                    .AsSelfWithInterfaces()
+                    .WithSingletonLifetime()
 
                 // Add the mediatr INotificationHandlers from the other assemblies
                 .AddClasses(f => f.AssignableTo(typeof(INotificationHandler<>)))

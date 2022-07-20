@@ -1,17 +1,18 @@
-﻿using Slipstream.Domain.Configuration;
-using Slipstream.Domain.Entities;
-using Slipstream.Domain.ValueObjects;
+﻿using Slipstream.Domain.Entities;
 
 namespace Slipstream.Domain;
 
 public interface IRegistry
 {
-    public IEnumerable<IPlugin> Plugins { get; }
+    public IEnumerable<IInstance> Instances { get; }
+    public IEnumerable<ITrigger> Triggers { get; }
 
-    public IPlugin? GetPlugin(EntityName name);
+    public IDictionary<string, ITriggerFactory> AvailableTriggerTypes { get; }
+    public IDictionary<string, IInstanceFactory> AvailableInstanceTypes { get; }
 
-    public void CreateInstance(IPlugin plugin, EntityName instanceName, IInstanceConfiguration config);
+    public void AddInstance(IInstance instance);
+    public void AddTrigger(ITrigger trigger);
 
     public void Start();
-    public void Stop();
+    public void Stop();    
 }

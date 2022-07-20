@@ -1,5 +1,4 @@
-﻿using Slipstream.Domain.Attributes;
-using Slipstream.Domain.Forms;
+﻿using Slipstream.Domain.Forms;
 
 namespace Slipstream.CLI;
 
@@ -19,5 +18,6 @@ internal class ConsoleFormVisitor : IFormCollectionVisitor
 
     public void VisitUnsupportedFormElement(UnsupportedFormElement element)
     {
+        _tui.Debug(element.Name + " not supported. Ignored");
     }
 }

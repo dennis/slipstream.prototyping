@@ -1,4 +1,4 @@
-﻿using Slipstream.Domain;
+﻿using Slipstream.Domain.Events;
 
 namespace Slipstream.Plugins.Dummy.Events;
 

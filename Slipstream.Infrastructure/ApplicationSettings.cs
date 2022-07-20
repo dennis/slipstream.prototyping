@@ -1,42 +1,69 @@
 ﻿using Slipstream.Domain;
+using Slipstream.Domain.Entities;
 using Slipstream.Domain.ValueObjects;
 
 namespace Slipstream.Infrastructure;
 
 public class ApplicationSettings : IApplicationSettings
 {
-    public ApplicationSettings()
+    private readonly IRegistry _registry;
+
+    public ApplicationSettings(IRegistry registry)
     {
         Directory.CreateDirectory("save/");
         Directory.CreateDirectory("save/instances/");
+        Directory.CreateDirectory("save/triggers/");
+
+        _registry = registry;
     }
 
-    public void SaveInstance(EntityName pluginName, EntityName instanceName, string content)
+    public void SaveInstance(IInstance instance)
     {
-        Directory.CreateDirectory($"save/instances/{pluginName}");
+        var json = _registry.AvailableInstanceTypes[instance.TypeName].ConfigurationJsonEncoder(instance.Configuration);
+        SaveEntity("save/instances", (string)instance.TypeName, instance.Name, json);
+    }
+        
+    public IEnumerable<(EntityTypeName, EntityName)> ReadInstances()
+        => ReadEntities("save/instances");
 
-        File.WriteAllText($"save/instances/{pluginName}/{instanceName}.json", content);
+    public string LoadInstance(EntityTypeName entityTypeName, EntityName entityName)
+        => LoadEntity("save/instances/", entityTypeName, entityName);
+
+    public void SaveTrigger(ITrigger trigger)
+    {
+        var json = _registry.AvailableTriggerTypes[trigger.TypeName].ConfigurationJsonEncoder(trigger.Configuration);
+        SaveEntity("save/triggers", (string)trigger.TypeName, trigger.Name, json);
     }
 
-    public IEnumerable<(EntityName, EntityName)> ReadInstances()
-    {
-        var entries = new List<(EntityName, EntityName)>();
+    public IEnumerable<(EntityTypeName, EntityName)> ReadTriggers()
+        => ReadEntities("save/triggers");
 
-        foreach (var pluginDirectory in Directory.GetDirectories("save/instances/"))
+    public string LoadTrigger(EntityTypeName entityTypeName, EntityName entityName)
+        => LoadEntity("save/triggers/", entityTypeName, entityName);
+
+    private static string LoadEntity(string rootDirectory, EntityTypeName entityTypeName, EntityName entityName)
+        => File.ReadAllText($"{rootDirectory}/{entityTypeName}/{entityName}.json");
+
+    private static IEnumerable<(EntityTypeName, EntityName)> ReadEntities(string rootDirectory)
+    {
+        var entries = new List<(EntityTypeName, EntityName)>();
+
+        foreach (var entityTypeDirectory in Directory.GetDirectories(rootDirectory))
         {
-            var pluginName = Path.GetFileName(pluginDirectory);
-            foreach (var instanceFile in Directory.GetFiles(pluginDirectory))
+            var entityType = Path.GetFileName(entityTypeDirectory);
+            foreach (var entityFilename in Directory.GetFiles(entityTypeDirectory))
             {
-                var instanceName = Path.GetFileNameWithoutExtension(Path.GetFileName(instanceFile));
-                entries.Add((pluginName, instanceName));
+                var entityName = Path.GetFileNameWithoutExtension(Path.GetFileName(entityFilename));
+                entries.Add((entityType, entityName));
             }
         }
 
         return entries;
     }
 
-    public string LoadInstance(EntityName pluginName, EntityName instanceName)
+    private static void SaveEntity(string rootDirectory, EntityTypeName entityTypeName, EntityName entityName, string content)
     {
-        return File.ReadAllText($"save/instances/{pluginName}/{instanceName}.json");
+        Directory.CreateDirectory($"{rootDirectory}/{entityTypeName}");
+        File.WriteAllText($"{rootDirectory}/{entityTypeName}/{entityName}.json", content);
     }
 }

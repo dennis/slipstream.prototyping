@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
 using Slipstream.Domain;
+using Slipstream.Domain.Events;
 
 namespace Slipstream.Infrastructure;
 

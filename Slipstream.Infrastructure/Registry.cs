@@ -1,4 +1,5 @@
 ﻿using Slipstream.Domain;
+using Slipstream.Domain.Actions;
 using Slipstream.Domain.Instances;
 using Slipstream.Domain.Rules;
 using Slipstream.Domain.Triggers;
@@ -16,13 +17,16 @@ public class Registry : IRegistry
 
     public IInstanceContainer InstanceContainer { get; }
     public ITriggerContainer TriggerContainer { get; }
-    public List<IRule> Rules { get; } = new();
+    public IActionContainer ActionContainer { get; }
+    public IRuleContainer RuleContainer { get; }
 
-    public Registry(IInstanceContainer availableInstanceTypes, ITriggerContainer triggerContainer)
+    public Registry(IInstanceContainer availableInstanceTypes, ITriggerContainer triggerContainer, IActionContainer actionContainer, IRuleContainer ruleContainer)
     {
         InstanceContainer = availableInstanceTypes;
         TriggerContainer = triggerContainer;
+        ActionContainer = actionContainer;
         _cancelTokenSource = new CancellationTokenSource();
+        RuleContainer = ruleContainer;
     }
 
     public void Start()
@@ -77,6 +81,13 @@ public class Registry : IRegistry
     {
         EnsureValidEntityName(rule.Name);
 
-        Rules.Add(rule);
+        RuleContainer.Rules.Add(rule);
+    }
+
+    public void AddAction(IAction action)
+    {
+        EnsureValidEntityName(action.Name);
+
+        ActionContainer.Actions.Add(action);
     }
 }

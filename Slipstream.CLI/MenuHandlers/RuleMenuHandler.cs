@@ -61,9 +61,9 @@ internal class RuleMenuHandler
     {
         tui.PrintStrong("List rules");
 
-        if (_registry.Rules.Any())
+        if (_registry.RuleContainer.Rules.Any())
         {
-            foreach (var rule in _registry.Rules)
+            foreach (var rule in _registry.RuleContainer.Rules)
             {
                 tui.Print($" - {rule.Name}  ({rule.GetType()})");
             }

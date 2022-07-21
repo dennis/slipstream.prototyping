@@ -14,6 +14,8 @@ public static class DependencyInjection
         services.AddSingleton<IApplicationSettings, ApplicationSettings>();
         services.AddSingleton<IInstanceContainer, InstanceContainer>();
         services.AddSingleton<ITriggerContainer, TriggerContainer>();
+        services.AddSingleton<IActionContainer, ActionContainer>();
+        services.AddSingleton<IRuleContainer, RuleContainer>();
 
         return services;
     }

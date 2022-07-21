@@ -40,6 +40,7 @@ internal class EntityHelper
         else
         {
             tui.Error("Invalid input!");
+            return;
         }
 
         var entityName = tui.Prompt("name");

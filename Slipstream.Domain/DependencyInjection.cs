@@ -2,6 +2,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
+using Slipstream.Domain.Actions;
 using Slipstream.Domain.Forms;
 using Slipstream.Domain.Instances;
 using Slipstream.Domain.Rules;
@@ -40,7 +41,10 @@ public static class DependencyInjection
 
                 .AddClasses(f => f.AssignableTo<IRuleFactory>())
                     .AsSelfWithInterfaces()
-                    
+
+                .AddClasses(f => f.AssignableTo<IActionFactory>())
+                    .AsSelfWithInterfaces()
+
                 // Add the mediatr INotificationHandlers from the other assemblies
                 .AddClasses(f => f.AssignableTo(typeof(INotificationHandler<>)))
                     .AsImplementedInterfaces()

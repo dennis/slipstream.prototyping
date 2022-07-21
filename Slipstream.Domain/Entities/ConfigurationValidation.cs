@@ -7,6 +7,7 @@ public class ConfigurationValidation
     private readonly Dictionary<string, string> _errors = new();
 
     public IDictionary<string, string> Errors { get => _errors; }
+    public static ConfigurationValidation OK => new();
 
     public void AddError(string propertyName, string errorMessage)
     {

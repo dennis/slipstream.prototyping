@@ -52,6 +52,8 @@ public class EventPublisher : IEventPublisher
         foreach (var item in triggerFired)
         {
             Console.WriteLine($" - triggered: {item}");
+
+
         }
     }
 }

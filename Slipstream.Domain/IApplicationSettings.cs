@@ -1,4 +1,5 @@
-﻿using Slipstream.Domain.Instances;
+﻿using Slipstream.Domain.Actions;
+using Slipstream.Domain.Instances;
 using Slipstream.Domain.Rules;
 using Slipstream.Domain.Triggers;
 using Slipstream.Domain.ValueObjects;
@@ -15,7 +16,11 @@ public interface IApplicationSettings
     void SaveTrigger(ITrigger trigger);
     string LoadTrigger(EntityTypeName triggerTypeName, EntityName triggerName);
 
-    public IEnumerable<(EntityTypeName, EntityName)> ReadRules();
+    IEnumerable<(EntityTypeName, EntityName)> ReadRules();
     void SaveRule(IRule rule);
     public string LoadRule(EntityName entityName);
+
+    IEnumerable<(EntityTypeName, EntityName)> ReadActions();
+    void SaveAction(IAction action);
+    public string LoadAction(EntityTypeName triggerTypeName, EntityName entityName);
 }

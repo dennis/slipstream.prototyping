@@ -10,6 +10,7 @@ internal class MainMenuHandler
     private readonly TriggerMenuHandler _triggerMenuHandler;
     private readonly InstanceMenuHandler _instanceMenuHandler;
     private readonly RuleMenuHandler _ruleMenuHandler;
+    private readonly ActionMenuHandler _actionMenuHandler;
     private readonly IRuleFactory _ruleFactory;
 
     public MainMenuHandler(
@@ -18,8 +19,8 @@ internal class MainMenuHandler
         TriggerMenuHandler triggerMenuHandler,
         InstanceMenuHandler instanceMenuHandler,
         RuleMenuHandler ruleMenuHandler,
-        IRuleFactory ruleFactory
-    )
+        IRuleFactory ruleFactory,
+        ActionMenuHandler actionMenuHandler)
     {
         _registry = registry;
         _applicationSettings = applicationSettings;
@@ -27,6 +28,7 @@ internal class MainMenuHandler
         _instanceMenuHandler = instanceMenuHandler;
         _ruleMenuHandler = ruleMenuHandler;
         _ruleFactory = ruleFactory;
+        _actionMenuHandler = actionMenuHandler;
     }
 
     public void Show(TUIHelper tui)
@@ -37,6 +39,7 @@ internal class MainMenuHandler
             tui.PrintHeading("Main menu:")
                 .Print(" 1 - load config")
                 .Print(" 2 - save config")
+                .Print(" a - actions menu")
                 .Print(" i - instances menu")
                 .Print(" r - rules menu")
                 .Print(" t - triggers menu")
@@ -53,6 +56,11 @@ internal class MainMenuHandler
 
                 case '2':
                     SaveConfig(tui);
+                    break;
+
+                case 'a':
+                case 'A':
+                    _actionMenuHandler.Show(tui.NewScope("actions"));
                     break;
 
                 case 'i':
@@ -137,6 +145,26 @@ internal class MainMenuHandler
             tui.Print($" - {ruleName}");
         }
 
+        tui.PrintStrong("Loading actions");
+
+        foreach (var (entityTypeName, entityName) in _applicationSettings.ReadActions())
+        {
+            var factory = _registry.ActionContainer.Types[entityTypeName];
+
+            var config = factory.ConfigurationJsonDecoder(_applicationSettings.LoadAction(entityTypeName, entityName));
+            if (config is not null && !factory.Validate(config).IsValid())
+            {
+                tui.Error($" - {entityTypeName} / {entityName} - configuration contains error. Ignoring");
+                continue;
+            }
+
+            var action = factory.Create(entityName, config);
+
+            _registry.AddAction(action);
+
+            tui.Print($" - {entityTypeName} / {entityName}");
+        }
+
         tui.Print("Done");
     }
 
@@ -154,9 +182,14 @@ internal class MainMenuHandler
             _applicationSettings.SaveTrigger(trigger);
         }
 
-        foreach (var rule in _registry.Rules)
+        foreach (var rule in _registry.RuleContainer.Rules)
         {
             _applicationSettings.SaveRule(rule);
+        }
+
+        foreach (var action in _registry.ActionContainer.Actions)
+        {
+            _applicationSettings.SaveAction(action);
         }
 
         tui.Print("Done");

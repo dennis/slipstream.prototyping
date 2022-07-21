@@ -7,9 +7,9 @@ public class NoOpTrigger : ITrigger
 {
     public ITriggerConfiguration? Configuration => null;
 
-    public EntityName Name => "NoOp";
+    public EntityName Name => "nooptrigger";
 
-    public EntityTypeName TypeName => "NoOp";
+    public EntityTypeName TypeName => "trigger";
 
     public bool Accepts(IEvent @event)
         => false;

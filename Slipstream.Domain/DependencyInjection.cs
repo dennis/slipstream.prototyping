@@ -1,6 +1,4 @@
-﻿using MediatR;
-
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 using Slipstream.Domain.Actions;
 using Slipstream.Domain.Forms;
@@ -14,11 +12,10 @@ namespace Slipstream.Domain;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddSlipstreamDomain(this IServiceCollection services, Assembly assembly)
+    public static IServiceCollection AddSlipstreamDomain(this IServiceCollection services)
     {
         services.AddTransient<IFormGenerator, FormGenerator>();
         services.AddTransient<IFormGenerator, FormGenerator>();
-        services.AddMediatR(assembly);
 
         services.Scan(selector =>
         {
@@ -44,10 +41,6 @@ public static class DependencyInjection
 
                 .AddClasses(f => f.AssignableTo<IActionFactory>())
                     .AsSelfWithInterfaces()
-
-                // Add the mediatr INotificationHandlers from the other assemblies
-                .AddClasses(f => f.AssignableTo(typeof(INotificationHandler<>)))
-                    .AsImplementedInterfaces()
                 ;
         });
 

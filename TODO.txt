@@ -1,8 +1,16 @@
-[ ] Refactor Instance and Trigger creation
-	[ ] shared save/load logic?
-	- generalized IFactory for all IXxxxFactory classes
-	- make triggers work
-
+[x] add actions
+[x] use actions
+	- get it to work
+[x] Remove this, as we're no longer using mediatr: .AddClasses(f => f.AssignableTo(typeof(INotificationHandler<>)))
+[ ] is this needed? .AddClasses(f => f.AssignableTo<IInstance>()) 
+[ ] move save logic out of MainMenuHandler
+[ ] improve how action/triggers are selected
+[ ] merge containers into one list?
+[ ] how should variables work? Action gets event? And you can perhaps have a state action that store these in combination with actiongroups
+[ ] store everything in same file
+[ ] use System.Collection.Immutable?
+[ ] Helpers that can cache the properties found on the different Configuration items
+[ ] use that for forms building and template stuff for eg. a printer
 
 [ ] Add ActionGroups - a ordered list of actions. These can have one of the following modes: (alternative name: programs?)
   - Sequence (once invoked, they will be executed one by one)

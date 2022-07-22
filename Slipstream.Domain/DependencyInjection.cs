@@ -6,8 +6,6 @@ using Slipstream.Domain.Instances;
 using Slipstream.Domain.Rules;
 using Slipstream.Domain.Triggers;
 
-using System.Reflection;
-
 namespace Slipstream.Domain;
 
 public static class DependencyInjection
@@ -20,9 +18,6 @@ public static class DependencyInjection
         services.Scan(selector =>
         {
             selector.FromApplicationDependencies()
-                .AddClasses(f => f.AssignableTo<IInstance>())
-                    .AsSelf()
-
                 .AddClasses(f => f.AssignableTo<IInstanceConfiguration>())
                     .AsSelf()
 

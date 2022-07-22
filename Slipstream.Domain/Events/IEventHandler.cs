@@ -1,7 +1,5 @@
-﻿using MediatR;
+﻿namespace Slipstream.Domain.Events;
 
-namespace Slipstream.Domain.Events;
-
-public interface IEventHandler<T> : INotificationHandler<T> where T : INotification
+public interface IEventHandler<T>
 {
 }

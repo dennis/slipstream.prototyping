@@ -27,10 +27,12 @@ public class EventPublisher : IEventPublisher
     }
 
     private readonly ITriggerContainer _triggerContainer;
+    private readonly IRuleContainer _ruleContainer;
 
-    public EventPublisher(ITriggerContainer triggerContainer)
+    public EventPublisher(ITriggerContainer triggerContainer, IRuleContainer ruleContainer)
     {
         _triggerContainer = triggerContainer;
+        _ruleContainer = ruleContainer;
     }
 
     public async Task PublishAsync(IEvent @event)
@@ -53,7 +55,11 @@ public class EventPublisher : IEventPublisher
         {
             Console.WriteLine($" - triggered: {item}");
 
-
+            foreach (var triggeredRule in _ruleContainer.Rules.Where(a => a.Trigger.Name == item))
+            {
+                Console.WriteLine($"   - used by rule: {triggeredRule.Name}. Invoking action {triggeredRule.Action.Name}");
+                triggeredRule.Action.Invoke(@event);
+            }
         }
     }
 }

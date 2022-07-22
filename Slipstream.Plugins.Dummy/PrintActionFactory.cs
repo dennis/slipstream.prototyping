@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Slipstream.Plugins.Dummy;
 
-internal class PrintActionFactory : IActionFactory
+public class PrintActionFactory : IActionFactory
 {
     public EntityTypeName TypeName => "printaction";
 
@@ -14,7 +14,7 @@ internal class PrintActionFactory : IActionFactory
         => JsonSerializer.Deserialize<PrintActionConfiguration>(json);
 
     public string ConfigurationJsonEncoder(IActionConfiguration? config)
-        => JsonSerializer.Serialize(config);
+        => JsonSerializer.Serialize<PrintActionConfiguration>((PrintActionConfiguration?)config);
 
     public IAction Create(EntityName name, IActionConfiguration? config)
     {

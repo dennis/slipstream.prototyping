@@ -133,18 +133,6 @@ internal class MainMenuHandler
             tui.Print($" - {triggerTypeName} / {triggerName}");
         }
 
-        tui.PrintStrong("Loading rules");
-
-        foreach (var (_, ruleName) in _applicationSettings.ReadRules())
-        {
-            var config = _ruleFactory.ConfigurationJsonDecoder(_applicationSettings.LoadRule(ruleName));
-            var rule = _ruleFactory.Create(ruleName, config);
-
-            _registry.AddRule(rule);
-
-            tui.Print($" - {ruleName}");
-        }
-
         tui.PrintStrong("Loading actions");
 
         foreach (var (entityTypeName, entityName) in _applicationSettings.ReadActions())
@@ -163,6 +151,18 @@ internal class MainMenuHandler
             _registry.AddAction(action);
 
             tui.Print($" - {entityTypeName} / {entityName}");
+        }
+
+        tui.PrintStrong("Loading rules");
+
+        foreach (var (_, ruleName) in _applicationSettings.ReadRules())
+        {
+            var config = _ruleFactory.ConfigurationJsonDecoder(_applicationSettings.LoadRule(ruleName));
+            var rule = _ruleFactory.Create(ruleName, config);
+
+            _registry.AddRule(rule);
+
+            tui.Print($" - {ruleName}");
         }
 
         tui.Print("Done");

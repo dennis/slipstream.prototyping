@@ -5,4 +5,6 @@ namespace Slipstream.Domain.Actions;
 public interface IAction : IEntity
 {
     IActionConfiguration? Configuration { get; }
+
+    void Invoke(object context);
 }

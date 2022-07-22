@@ -5,5 +5,5 @@ namespace Slipstream.Infrastructure;
 
 internal class RuleContainer : IRuleContainer
 {
-    public List<IRule> Rules => new();
+    public List<IRule> Rules { get; } = new();
 }

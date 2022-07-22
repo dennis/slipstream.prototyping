@@ -25,8 +25,8 @@ public class Registry : IRegistry
         InstanceContainer = availableInstanceTypes;
         TriggerContainer = triggerContainer;
         ActionContainer = actionContainer;
-        _cancelTokenSource = new CancellationTokenSource();
         RuleContainer = ruleContainer;
+        _cancelTokenSource = new CancellationTokenSource();
     }
 
     public void Start()

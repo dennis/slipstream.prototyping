@@ -9,4 +9,8 @@ public class NoOpAction : IAction
     public EntityTypeName TypeName => "action";
 
     public IActionConfiguration? Configuration => null;
+
+    public void Invoke(object _)
+    {
+    }
 }

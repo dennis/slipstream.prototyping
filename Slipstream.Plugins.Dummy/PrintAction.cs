@@ -3,7 +3,7 @@ using Slipstream.Domain.ValueObjects;
 
 namespace Slipstream.Plugins.Dummy;
 
-internal class PrintAction : IAction
+public class PrintAction : IAction
 {
     public EntityName Name { get; }
     public EntityTypeName TypeName => "printaction";
@@ -12,4 +12,9 @@ internal class PrintAction : IAction
 
     public PrintAction(EntityName name, IActionConfiguration configuration)
         => (Name, Configuration) = (name, configuration);
+
+    public void Invoke(object _)
+    {
+        Console.WriteLine(((PrintActionConfiguration)Configuration!).Message);
+    }
 }

@@ -99,4 +99,107 @@ public class ApplicationSettings : IApplicationSettings
         Directory.CreateDirectory($"{rootDirectory}/{entityTypeName}");
         File.WriteAllText($"{rootDirectory}/{entityTypeName}/{entityName}.json", content);
     }
+
+    public void Load(Action<string> print, Action<string> error)
+    {
+        print("Loading instances");
+
+        foreach (var (instanceTypeName, instanceName) in ReadInstances())
+        {
+            var factory = _registry.InstanceContainer[instanceTypeName];
+
+            var config = factory.ConfigurationJsonDecoder(LoadInstance(instanceTypeName, instanceName));
+            if (config is not null && !factory.Validate(config).IsValid())
+            {
+                error($" - {instanceTypeName} / {instanceName} - configuration contains error. Ignoring");
+                continue;
+            }
+            var instance = factory.Create(instanceName, config);
+
+            _registry.AddInstance(instance);
+
+            print($" - {instanceTypeName} / {instanceName}");
+        }
+
+        print("Loading triggers");
+
+        foreach (var (triggerTypeName, triggerName) in ReadTriggers())
+        {
+            var factory = _registry.TriggerContainer.Types[triggerTypeName];
+
+            var config = factory.ConfigurationJsonDecoder(LoadTrigger(triggerTypeName, triggerName));
+            if (config is not null && !factory.Validate(config).IsValid())
+            {
+                error($" - {triggerTypeName} / {triggerName} - configuration contains error. Ignoring");
+                continue;
+            }
+
+            var trigger = factory.Create(triggerName, config);
+
+            _registry.AddTrigger(trigger);
+
+            print($" - {triggerTypeName} / {triggerName}");
+        }
+
+        print("Loading actions");
+
+        foreach (var (entityTypeName, entityName) in ReadActions())
+        {
+            var factory = _registry.ActionContainer.Types[entityTypeName];
+
+            var config = factory.ConfigurationJsonDecoder(LoadAction(entityTypeName, entityName));
+            if (config is not null && !factory.Validate(config).IsValid())
+            {
+                error($" - {entityTypeName} / {entityName} - configuration contains error. Ignoring");
+                continue;
+            }
+
+            var action = factory.Create(entityName, config);
+
+            _registry.AddAction(action);
+
+            print($" - {entityTypeName} / {entityName}");
+        }
+
+        print("Loading rules");
+
+        foreach (var (_, ruleName) in ReadRules())
+        {
+            var config = _ruleFactory.ConfigurationJsonDecoder(LoadRule(ruleName));
+            var rule = _ruleFactory.Create(ruleName, config);
+
+            _registry.AddRule(rule);
+
+            print($" - {ruleName}");
+        }
+
+        print("Done");
+    }
+
+    public void Save(Action<string> print)
+    {
+        print("Saving...");
+
+        foreach (var instance in _registry.InstanceContainer.Instances)
+        {
+            SaveInstance(instance);
+        }
+
+        foreach (var trigger in _registry.TriggerContainer.Triggers)
+        {
+            SaveTrigger(trigger);
+        }
+
+        foreach (var rule in _registry.RuleContainer.Rules)
+        {
+            SaveRule(rule);
+        }
+
+        foreach (var action in _registry.ActionContainer.Actions)
+        {
+            SaveAction(action);
+        }
+
+        print("Done");
+    }
 }

@@ -23,4 +23,6 @@ public interface IApplicationSettings
     IEnumerable<(EntityTypeName, EntityName)> ReadActions();
     void SaveAction(IAction action);
     public string LoadAction(EntityTypeName triggerTypeName, EntityName entityName);
+    void Load(Action<string> print, Action<string> error);
+    void Save(Action<string> print);
 }

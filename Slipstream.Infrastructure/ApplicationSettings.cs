@@ -11,96 +11,115 @@ public class ApplicationSettings : IApplicationSettings
 {
     private readonly IRegistry _registry;
     private readonly IRuleFactory _ruleFactory;
+    private readonly string _savePath = "slipstream.setup";
 
     public ApplicationSettings(IRegistry registry, IRuleFactory ruleFactory)
     {
-        Directory.CreateDirectory("save/");
-        Directory.CreateDirectory("save/instances/");
-        Directory.CreateDirectory("save/triggers/");
-        Directory.CreateDirectory("save/actions/");
-
         _registry = registry;
         _ruleFactory = ruleFactory;
     }
 
     public void Load(Action<string> print, Action<string> error)
     {
-        print("Loading instances");
+        print("Loading");
 
-        foreach (var (instanceTypeName, instanceName) in ReadInstances())
+        foreach (var line in File.ReadAllLines(_savePath))
         {
-            var factory = _registry.InstanceContainer[instanceTypeName];
+            var elements = line.Split('\t');
 
-            var config = factory.ConfigurationJsonDecoder(LoadInstance(instanceTypeName, instanceName));
-            if (config is not null && !factory.Validate(config).IsValid())
+            switch (elements[0])
             {
-                error($" - {instanceTypeName} / {instanceName} - configuration contains error. Ignoring");
-                continue;
+                case "instances":
+                    ParseInstanceLine(print, error, elements[1], elements[2], elements[3]);
+                    break;
+                case "triggers":
+                    ParseTriggersLine(print, error, elements[1], elements[2], elements[3]);
+                    break;
+                case "actions":
+                    ParseActionsLine(print, error, elements[1], elements[2], elements[3]);
+                    break;
+                case "rules":
+                    ParseRulesLine(print, elements[2], elements[3]);
+                    break;
+                default:
+                    error("Ignoring line: " + line);
+                    break;
             }
-            var instance = factory.Create(instanceName, config);
-
-            _registry.AddInstance(instance);
-
-            print($" - {instanceTypeName} / {instanceName}");
         }
 
-        print("Loading triggers");
-
-        foreach (var (triggerTypeName, triggerName) in ReadTriggers())
-        {
-            var factory = _registry.TriggerContainer.Types[triggerTypeName];
-
-            var config = factory.ConfigurationJsonDecoder(LoadTrigger(triggerTypeName, triggerName));
-            if (config is not null && !factory.Validate(config).IsValid())
-            {
-                error($" - {triggerTypeName} / {triggerName} - configuration contains error. Ignoring");
-                continue;
-            }
-
-            var trigger = factory.Create(triggerName, config);
-
-            _registry.AddTrigger(trigger);
-
-            print($" - {triggerTypeName} / {triggerName}");
-        }
-
-        print("Loading actions");
-
-        foreach (var (entityTypeName, entityName) in ReadActions())
-        {
-            var factory = _registry.ActionContainer.Types[entityTypeName];
-
-            var config = factory.ConfigurationJsonDecoder(LoadAction(entityTypeName, entityName));
-            if (config is not null && !factory.Validate(config).IsValid())
-            {
-                error($" - {entityTypeName} / {entityName} - configuration contains error. Ignoring");
-                continue;
-            }
-
-            var action = factory.Create(entityName, config);
-
-            _registry.AddAction(action);
-
-            print($" - {entityTypeName} / {entityName}");
-        }
-
-        print("Loading rules");
-
-        foreach (var (_, ruleName) in ReadRules())
-        {
-            var config = _ruleFactory.ConfigurationJsonDecoder(LoadRule(ruleName));
-            var rule = _ruleFactory.Create(ruleName, config);
-
-            _registry.AddRule(rule);
-
-            print($" - {ruleName}");
-        }
 
         print("Done");
     }
 
+    private void ParseRulesLine(Action<string> print, string entityName, string json)
+    {
+        var config = _ruleFactory.ConfigurationJsonDecoder(json);
+        var rule = _ruleFactory.Create(entityName, config);
+
+        _registry.AddRule(rule);
+
+        print($" - rule: {entityName}");
+    }
+
+    private void ParseActionsLine(Action<string> print, Action<string> error, string entityTypeName, string entityName, string json)
+    {
+        var factory = _registry.ActionContainer.Types[entityTypeName];
+
+        var config = factory.ConfigurationJsonDecoder(json);
+        if (config is not null && !factory.Validate(config).IsValid())
+        {
+            error($" - action: {entityTypeName} / {entityName} - configuration contains error. Ignoring");
+            return;
+        }
+
+        var action = factory.Create(entityName, config);
+
+        _registry.AddAction(action);
+
+        print($" - action: {entityTypeName} / {entityName}");
+    }
+
+    private void ParseTriggersLine(Action<string> print, Action<string> error, string entityTypeName, string entityName, string json)
+    {
+        var factory = _registry.TriggerContainer.Types[entityTypeName];
+
+        var config = factory.ConfigurationJsonDecoder(json);
+        if (config is not null && !factory.Validate(config).IsValid())
+        {
+            error($" - trigger: {entityTypeName} / {entityName} - configuration contains error. Ignoring");
+            return;
+        }
+
+        var trigger = factory.Create(entityName, config);
+
+        _registry.AddTrigger(trigger);
+
+        print($" - trigger: {entityTypeName} / {entityName}");
+    }
+
+    private void ParseInstanceLine(Action<string> print, Action<string> error, string entityTypeName, string entityName, string json)
+    {
+        var factory = _registry.InstanceContainer[entityTypeName];
+
+        var config = factory.ConfigurationJsonDecoder(json);
+        if (config is not null && !factory.Validate(config).IsValid())
+        {
+            error($" - instance: {entityTypeName} / {entityName} - configuration contains error. Ignoring");
+            return;
+        }
+        var instance = factory.Create(entityName, config);
+
+        _registry.AddInstance(instance);
+
+        print($" - instance: {entityTypeName} / {entityName}");
+    }
+
     public void Save(Action<string> print)
     {
+        if (File.Exists(_savePath))
+        {
+            File.Move(_savePath, Path.GetFileNameWithoutExtension(_savePath) + "-old" + Path.GetExtension(_savePath), true);
+        }
         print("Saving...");
 
         foreach (var instance in _registry.InstanceContainer.Instances)
@@ -113,91 +132,43 @@ public class ApplicationSettings : IApplicationSettings
             SaveTrigger(trigger);
         }
 
-        foreach (var rule in _registry.RuleContainer.Rules)
-        {
-            SaveRule(rule);
-        }
-
         foreach (var action in _registry.ActionContainer.Actions)
         {
             SaveAction(action);
         }
 
-        print("Done");
+        foreach (var rule in _registry.RuleContainer.Rules)
+        {
+            SaveRule(rule);
+        }
     }
 
     private void SaveInstance(IInstance instance)
     {
         var json = _registry.InstanceContainer[instance.TypeName].ConfigurationJsonEncoder(instance.Configuration);
-        SaveEntity("save/instances", (string)instance.TypeName, instance.Name, json);
+        SaveEntity("instances", (string)instance.TypeName, instance.Name, json);
     }
-
-    private static IEnumerable<(EntityTypeName, EntityName)> ReadInstances()
-        => ReadEntities("save/instances");
-
-    private static string LoadInstance(EntityTypeName entityTypeName, EntityName entityName)
-        => LoadEntity("save/instances/", entityTypeName, entityName);
 
     private void SaveTrigger(ITrigger trigger)
     {
         var json = _registry.TriggerContainer.Types[trigger.TypeName].ConfigurationJsonEncoder(trigger.Configuration);
-        SaveEntity("save/triggers", (string)trigger.TypeName, trigger.Name, json);
+        SaveEntity("triggers", (string)trigger.TypeName, trigger.Name, json);
     }
-
-    private static IEnumerable<(EntityTypeName, EntityName)> ReadTriggers()
-        => ReadEntities("save/triggers");
-
-    private static string LoadTrigger(EntityTypeName entityTypeName, EntityName entityName)
-        => LoadEntity("save/triggers/", entityTypeName, entityName);
 
     private void SaveRule(IRule rule)
     {
         var json = _ruleFactory.ConfigurationJsonEncoder(rule.Configuration);
-        SaveEntity("save/rules", (string)rule.TypeName, rule.Name, json);
+        SaveEntity("rules", (string)rule.TypeName, rule.Name, json);
     }
-
-    private static IEnumerable<(EntityTypeName, EntityName)> ReadRules()
-        => ReadEntities("save/rules");
-
-    private static string LoadRule(EntityName entityName)
-        => LoadEntity("save/rules", "rule", entityName);
-
-    private static IEnumerable<(EntityTypeName, EntityName)> ReadActions()
-        => ReadEntities("save/actions");
 
     private void SaveAction(IAction action)
     {
         var json = _registry.ActionContainer.Types[action.TypeName].ConfigurationJsonEncoder(action.Configuration); 
-        SaveEntity("save/actions", (string)action.TypeName, action.Name, json);
+        SaveEntity("actions", (string)action.TypeName, action.Name, json);
     }
 
-    private static string LoadAction(EntityTypeName entityTypeName, EntityName entityName)
-        => LoadEntity("save/actions", entityTypeName, entityName);
-
-    private static string LoadEntity(string rootDirectory, EntityTypeName entityTypeName, EntityName entityName)
-        => File.ReadAllText($"{rootDirectory}/{entityTypeName}/{entityName}.json");
-
-    private static IEnumerable<(EntityTypeName, EntityName)> ReadEntities(string rootDirectory)
+    private void SaveEntity(string type, EntityTypeName entityTypeName, EntityName entityName, string content)
     {
-        var entries = new List<(EntityTypeName, EntityName)>();
-
-        foreach (var entityTypeDirectory in Directory.GetDirectories(rootDirectory))
-        {
-            var entityType = Path.GetFileName(entityTypeDirectory);
-            foreach (var entityFilename in Directory.GetFiles(entityTypeDirectory))
-            {
-                var entityName = Path.GetFileNameWithoutExtension(Path.GetFileName(entityFilename));
-                entries.Add((entityType, entityName));
-            }
-        }
-
-        return entries;
+        File.AppendAllLines(_savePath, new string[] { $"{type}\t{entityTypeName}\t{entityName}\t{content}" });
     }
-
-    private static void SaveEntity(string rootDirectory, EntityTypeName entityTypeName, EntityName entityName, string content)
-    {
-        Directory.CreateDirectory($"{rootDirectory}/{entityTypeName}");
-        File.WriteAllText($"{rootDirectory}/{entityTypeName}/{entityName}.json", content);
-    }
-
 }

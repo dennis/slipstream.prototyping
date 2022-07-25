@@ -1,4 +1,4 @@
-﻿namespace Slipstream.Core.Entities;
+﻿namespace Slipstream.Domain.Entities;
 
 public interface IInstance : IEntity
 {

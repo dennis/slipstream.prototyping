@@ -1,4 +1,4 @@
-﻿namespace Slipstream.Core.Forms;
+﻿namespace Slipstream.Domain.Forms;
 
 public class FormCollection
 {

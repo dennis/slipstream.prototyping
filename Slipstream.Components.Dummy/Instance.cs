@@ -1,8 +1,5 @@
-﻿using Slipstream.Core;
-using Slipstream.Core.Entities;
-using Slipstream.Core.ValueObjects;
-
-using System.Reactive.Linq;
+﻿using Slipstream.Domain.Entities;
+using Slipstream.Domain.ValueObjects;
 
 namespace Slipstream.Components.Dummy;
 
@@ -11,15 +8,13 @@ public class Instance : IInstance
     public EntityName Name { get; private set; }
 
     public Instance(EntityName name)
-        => Name = name; 
+        => Name = name;
 
-    public void Input(IObservable<IEvent> stream, CancellationToken cancel)
+    public Task MainAsync(CancellationToken cancellationToken)
+        => Task.CompletedTask;
+
+    internal void OnKeyPressEvent(KeyPressEvent @event)
     {
-        stream.Subscribe(a => Console.WriteLine($"[{Name}] Got event {a}"));
+        Console.WriteLine($"  [{Name}] Got keyrress '{@event.Key}'");
     }
-
-    public IObservable<IEvent>? Output(CancellationToken cancel)
-        => Observable
-            .Timer(DateTimeOffset.Now.AddSeconds(1.5), TimeSpan.FromSeconds(5))
-            .Select(_ => new TimedEvent());
 }

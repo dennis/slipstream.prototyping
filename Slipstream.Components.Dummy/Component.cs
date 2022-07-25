@@ -1,44 +1,52 @@
-﻿using Slipstream.Core;
-using Slipstream.Core.Attributes;
-using Slipstream.Core.Configuration;
-using Slipstream.Core.Entities;
-using Slipstream.Core.ValueObjects;
+﻿using Slipstream.Domain;
+using Slipstream.Domain.Attributes;
+using Slipstream.Domain.Configuration;
+using Slipstream.Domain.Entities;
+using Slipstream.Domain.ValueObjects;
 
-using System.Reactive.Linq;
+using System.Collections.Concurrent;
 
 namespace Slipstream.Components.Dummy;
 
 [SlipstreamComponent(typeof(InstanceFactory), typeof(Configuration))] // TODO: Try to avoid this
 public class Component : IComponent
 {
-    public EntityName Name => EntityName.From("Dummy");
+    private readonly IEventPublisher _eventPublisher;
 
-    public void Input(IObservable<IEvent> stream, CancellationToken cancel)
+    public EntityName Name => EntityName.From("Dummy");
+    public IEnumerable<EntityName> InstanceNames => TypedInstances.Keys.ToList();
+
+    public ConcurrentDictionary<EntityName, Instance> TypedInstances { get; set; } = new();
+
+    public Component(IEventPublisher eventPublisher)
     {
-        stream.Subscribe(a => Console.WriteLine($"[{Name}] Got event {a.ToString()}"));
+        _eventPublisher = eventPublisher;
     }
 
-    IObservable<IEvent>? IEntity.Output(CancellationToken cancel)
+    public Task MainAsync(CancellationToken cancel)
     {
-        return Observable.Create<IEvent>(
-            obs =>
+        return Task.Run(async () =>
+        {
+            while (!cancel.IsCancellationRequested)
             {
-                return Task.Run(() =>
-                {
-                    while (!cancel.IsCancellationRequested)
-                    {
-                        var c = Console.ReadKey().KeyChar;
-                        obs.OnNext(new KeyPressEvent(c));
-                    }
+                var c = Console.ReadKey().KeyChar;
 
-                    obs.OnCompleted();
-                });
-            });
+                Console.WriteLine("GOT CHAR: " + c);
+
+                await _eventPublisher.Publish(new KeyPressEvent(c)).ConfigureAwait(false);
+            }
+        }, cancel);
     }
 
     public ConfigurationValidationResult ValidateConfiguration(IConfiguration config)
     {
         var result = new ConfigurationValidator().Validate((Configuration)config);
+
         return ConfigurationValidationResult.FromFluentValidationResult(result);
+    }
+
+    public void AddInstance(EntityName instanceName, IInstance instance)
+    {
+        TypedInstances[instanceName] = (Instance)instance;
     }
 }

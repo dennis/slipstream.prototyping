@@ -1,4 +1,4 @@
-﻿using Slipstream.Core;
+﻿using Slipstream.Domain;
 
 namespace Slipstream.Components.Dummy;
 

@@ -1,5 +1,5 @@
-﻿using Slipstream.Core.Entities;
-using Slipstream.Core.ValueObjects;
+﻿using Slipstream.Domain.Entities;
+using Slipstream.Domain.ValueObjects;
 
 namespace Slipstream.Components.Dummy;
 

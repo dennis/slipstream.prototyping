@@ -1,5 +1,5 @@
-﻿using Slipstream.Core;
-using Slipstream.Core.Forms;
+﻿using Slipstream.Domain;
+using Slipstream.Domain.Forms;
 
 namespace Slipstream.CLI;
 
@@ -14,7 +14,7 @@ public class Application
         _formGenerator = formGenerator;
     }
 
-    public void RunAsync()
+    public async Task RunAsync()
     {
         Console.WriteLine("Slipstream");
 
@@ -47,7 +47,7 @@ public class Application
 
         _registry.Start();
 
-        Console.ReadLine();
+        await Task.Delay(-1).ConfigureAwait(false);
 
         _registry.Stop();
 

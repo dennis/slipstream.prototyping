@@ -1,14 +1,11 @@
 ﻿using System.Reflection;
 
-namespace Slipstream.Core.Forms;
+namespace Slipstream.Domain.Forms;
 
 public class UnsupportedFormElement : IFormElement
 {
-    private PropertyInfo _property;
-
-    public UnsupportedFormElement(PropertyInfo property)
+    public UnsupportedFormElement(PropertyInfo _)
     {
-        _property = property;
     }
 
     public string Name { get; init; } = "";

@@ -3,13 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slipstream.Core", "Slipstream.Core\Slipstream.Core.csproj", "{244D60F4-9572-4A6F-BEAB-4EC9B4E6AF95}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{3A6C1DBA-39F2-4ABB-AFA7-AD17CDCE4AE1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slipstream.Components.Dummy", "Slipstream.Components.Dummy\Slipstream.Components.Dummy.csproj", "{2DA92F8B-3D98-48EB-9CC8-756D0199ADCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slipstream.Components.Dummy", "Slipstream.Components.Dummy\Slipstream.Components.Dummy.csproj", "{2DA92F8B-3D98-48EB-9CC8-756D0199ADCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slipstream.CLI", "Slipstream.CLI\Slipstream.CLI.csproj", "{05550717-B11C-46AB-97EB-4F8A12E8C35D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slipstream.CLI", "Slipstream.CLI\Slipstream.CLI.csproj", "{05550717-B11C-46AB-97EB-4F8A12E8C35D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{66860E57-7BBE-434E-BC23-4C97F9883534}"
+	ProjectSection(SolutionItems) = preProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slipstream.Domain", "Slipstream.Domain\Slipstream.Domain.csproj", "{BB843332-A106-4BC3-A1B6-A803F0A13D69}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slipstream.Infrastructure", "Slipstream.Infrastructure\Slipstream.Infrastructure.csproj", "{29DB3BEF-4D05-44BA-8306-B52596FB97F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{244D60F4-9572-4A6F-BEAB-4EC9B4E6AF95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{244D60F4-9572-4A6F-BEAB-4EC9B4E6AF95}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{244D60F4-9572-4A6F-BEAB-4EC9B4E6AF95}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{244D60F4-9572-4A6F-BEAB-4EC9B4E6AF95}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2DA92F8B-3D98-48EB-9CC8-756D0199ADCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2DA92F8B-3D98-48EB-9CC8-756D0199ADCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DA92F8B-3D98-48EB-9CC8-756D0199ADCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -29,6 +31,14 @@ Global
 		{05550717-B11C-46AB-97EB-4F8A12E8C35D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05550717-B11C-46AB-97EB-4F8A12E8C35D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05550717-B11C-46AB-97EB-4F8A12E8C35D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB843332-A106-4BC3-A1B6-A803F0A13D69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB843332-A106-4BC3-A1B6-A803F0A13D69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB843332-A106-4BC3-A1B6-A803F0A13D69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB843332-A106-4BC3-A1B6-A803F0A13D69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29DB3BEF-4D05-44BA-8306-B52596FB97F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29DB3BEF-4D05-44BA-8306-B52596FB97F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29DB3BEF-4D05-44BA-8306-B52596FB97F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29DB3BEF-4D05-44BA-8306-B52596FB97F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

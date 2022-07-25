@@ -1,4 +1,4 @@
-﻿using Slipstream.Core.Forms;
+﻿using Slipstream.Domain.Forms;
 
 namespace Slipstream.CLI;
 

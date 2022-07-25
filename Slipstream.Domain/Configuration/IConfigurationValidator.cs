@@ -1,4 +1,4 @@
-﻿namespace Slipstream.Core.Configuration;
+﻿namespace Slipstream.Domain.Configuration;
 
 public interface IConfigurationValidator
 {

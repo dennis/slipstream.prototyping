@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
 using Slipstream.Domain.Actions;
-using Slipstream.Domain.Forms;
+using Slipstream.Domain.DynamicProperties;
+using Slipstream.Domain.Entities;
 using Slipstream.Domain.Instances;
 using Slipstream.Domain.Rules;
 using Slipstream.Domain.Triggers;
@@ -12,14 +13,14 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddSlipstreamDomain(this IServiceCollection services)
     {
-        services.AddTransient<IFormGenerator, FormGenerator>();
-        services.AddTransient<IFormGenerator, FormGenerator>();
+        services.AddTransient<IPropertyScanner, PropertyScanner>();
+        services.AddTransient<IPropertyScanner, PropertyScanner>();
 
         services.Scan(selector =>
         {
             selector.FromApplicationDependencies()
-                .AddClasses(f => f.AssignableTo<IInstanceConfiguration>())
-                    .AsSelf()
+                .AddClasses(f => f.AssignableTo<IEntityConfiguration>())
+                    .AsSelfWithInterfaces()
 
                 .AddClasses(f => f.AssignableTo<IInstanceConfigurationValidator>())
                     .AsSelf()

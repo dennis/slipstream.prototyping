@@ -1,17 +1,17 @@
 ﻿using Slipstream.Domain.Entities;
 using Slipstream.Domain.Extensions;
-using Slipstream.Domain.Forms;
+using Slipstream.Domain.DynamicProperties;
 using Slipstream.Domain.ValueObjects;
 
 namespace Slipstream.CLI;
 
 internal class EntityHelper
 {
-    private readonly IFormGenerator _formGenerator;
+    private readonly IPropertyScanner _propertyScanner;
 
-    public EntityHelper(IFormGenerator formGenerator)
+    public EntityHelper(IPropertyScanner propertyScanner)
     {
-        _formGenerator = formGenerator;
+        _propertyScanner = propertyScanner;
     }
 
     public void Creator<TInstance, TFactory, TConfiguration>(
@@ -23,8 +23,9 @@ internal class EntityHelper
     )
         where TInstance : IEntity
         where TFactory : class
+        where TConfiguration : IEntityConfiguration
     {
-        string entityTypeName = "";
+        string entityTypeName;
 
         tui.PrintStrong("Select type");
 
@@ -50,7 +51,7 @@ internal class EntityHelper
         var config = configurationCreator(entityTypeName);
         if (config is not null)
         {
-            var form = _formGenerator.Generate(config);
+            var form = _propertyScanner.Generate(config);
             form.Visit(new ConsoleFormVisitor(configTui));
             form.Populate(config);
 

@@ -1,10 +1,10 @@
 ﻿namespace Slipstream.Domain.Attributes;
 
 [AttributeUsage(AttributeTargets.Property)]
-public class FormHelp : Attribute
+public class PropertyHelp : Attribute
 {
     public string Description { get; }
 
-    public FormHelp(string text)
+    public PropertyHelp(string text)
         => Description = text; 
 }
